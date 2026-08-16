@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InspecaoIdRouteImport } from './routes/inspecao.$id'
+import { Route as AreaIdAreaIdRouteImport } from './routes/area.$id.$areaId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InspecaoIdRoute = InspecaoIdRouteImport.update({
+  id: '/inspecao/$id',
+  path: '/inspecao/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AreaIdAreaIdRoute = AreaIdAreaIdRouteImport.update({
+  id: '/area/$id/$areaId',
+  path: '/area/$id/$areaId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/inspecao/$id': typeof InspecaoIdRoute
+  '/area/$id/$areaId': typeof AreaIdAreaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/inspecao/$id': typeof InspecaoIdRoute
+  '/area/$id/$areaId': typeof AreaIdAreaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/inspecao/$id': typeof InspecaoIdRoute
+  '/area/$id/$areaId': typeof AreaIdAreaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/inspecao/$id' | '/area/$id/$areaId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/inspecao/$id' | '/area/$id/$areaId'
+  id: '__root__' | '/' | '/inspecao/$id' | '/area/$id/$areaId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  InspecaoIdRoute: typeof InspecaoIdRoute
+  AreaIdAreaIdRoute: typeof AreaIdAreaIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inspecao/$id': {
+      id: '/inspecao/$id'
+      path: '/inspecao/$id'
+      fullPath: '/inspecao/$id'
+      preLoaderRoute: typeof InspecaoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/area/$id/$areaId': {
+      id: '/area/$id/$areaId'
+      path: '/area/$id/$areaId'
+      fullPath: '/area/$id/$areaId'
+      preLoaderRoute: typeof AreaIdAreaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InspecaoIdRoute: InspecaoIdRoute,
+  AreaIdAreaIdRoute: AreaIdAreaIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
