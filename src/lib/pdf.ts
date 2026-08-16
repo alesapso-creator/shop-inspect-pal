@@ -149,7 +149,8 @@ export function buildInspectionPdf(inspection: Inspection): jsPDF {
         const rowH = Math.max(...heights);
         ensure(rowH + 4);
         pair.forEach((src, j) => {
-          doc.addImage(src, "JPEG", M + j * (imgW + gap), y, imgW, heights[j]);
+          const imgH = heights[j] ?? rowH;
+          doc.addImage(src, "JPEG", M + j * (imgW + gap), y, imgW, imgH);
         });
         y += rowH + 4;
       }
