@@ -1,0 +1,17 @@
+{
+  "name": "Inspeção de Loja",
+  "short_name": "Inspeção",
+  "description": "Registre inspeções de loja por área, com fotos e relatório em PDF.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f3138",
+  "theme_color": "#0f3138",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
