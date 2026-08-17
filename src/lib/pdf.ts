@@ -203,13 +203,13 @@ export function pdfFileName(inspection: Inspection) {
   return `inspecao-${slug(inspection.loja)}-${inspection.data}.pdf`;
 }
 
-export function downloadInspectionPdf(inspection: Inspection) {
-  const doc = buildInspectionPdf(inspection);
+export async function downloadInspectionPdf(inspection: Inspection) {
+  const doc = await buildInspectionPdf(inspection);
   doc.save(pdfFileName(inspection));
 }
 
 export async function shareInspectionPdf(inspection: Inspection) {
-  const doc = buildInspectionPdf(inspection);
+  const doc = await buildInspectionPdf(inspection);
   const blob = doc.output("blob");
   const file = new File([blob], pdfFileName(inspection), { type: "application/pdf" });
   const nav = navigator as Navigator & { canShare?: (data: { files: File[] }) => boolean };
