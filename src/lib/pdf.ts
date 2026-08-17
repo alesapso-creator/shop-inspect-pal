@@ -1,5 +1,25 @@
 import { jsPDF } from "jspdf";
 import { AREAS, formatDate, statusLabel, type Inspection, type StatusId } from "./inspection";
+import timbre from "@/assets/timbre-friboi.jpg.asset.json";
+
+let timbreCache: string | null = null;
+
+async function loadTimbre(): Promise<string | null> {
+  if (timbreCache) return timbreCache;
+  try {
+    const res = await fetch(timbre.url);
+    const blob = await res.blob();
+    timbreCache = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+    return timbreCache;
+  } catch {
+    return null;
+  }
+}
 
 const M = 15; // margem mm
 const W = 210;
