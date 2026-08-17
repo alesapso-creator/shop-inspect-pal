@@ -1,21 +1,18 @@
-# Fundo padrão na primeira página do PDF
+# Papel timbrado Friboi+ na primeira página do PDF
 
-Adicionar a sua imagem padrão de relatório como fundo da primeira página do PDF, com transparência para o texto continuar legível.
+A imagem enviada é um timbre (faixa azul com o logo Friboi+ no topo e o restante da folha em branco). Ela passa a ser o fundo da primeira página do relatório.
 
 ## O que muda
 
-- A imagem enviada passa a ser o fundo da **página 1** do relatório, cobrindo a folha A4 inteira (210x297 mm), atrás de todo o conteúdo.
-- Aplicada com opacidade reduzida (~12-15%), como marca d'água, para não atrapalhar a leitura de textos, status e fotos.
-- As demais páginas seguem limpas, como hoje.
-- O cabeçalho azul-petróleo atual da primeira página passa a ser semitransparente (ou é removido) para não cobrir a imagem — decido pelo resultado visual após ver a arte.
+- Página 1 do PDF passa a ter o timbre Friboi+ como fundo, cobrindo a folha A4 inteira.
+- O cabeçalho azul-petróleo atual (faixa com "Relatório de Inspeção de Loja") é removido da página 1, para não cobrir a arte. O título e a data de geração passam a ser escritos em texto escuro logo abaixo da faixa azul do timbre.
+- O conteúdo da primeira página começa mais abaixo (~55 mm do topo), respeitando a área da arte.
+- Como a faixa é forte no topo mas o corpo da folha é branco, o timbre entra em opacidade cheia na faixa; caso alguma foto ou texto caia sobre uma parte colorida, aplico uma leve transparência (~15%) só nessa sobreposição para manter a leitura.
+- As demais páginas continuam limpas, com o rodapé de paginação atual.
 
 ## Detalhes técnicos
 
-- A imagem é enviada como asset do projeto e importada no gerador de PDF.
-- Em `src/lib/pdf.ts`, antes de qualquer conteúdo: desenhar a imagem em (0,0) com 210x297 mm usando um `GState` com `opacity`, restaurando a opacidade normal em seguida.
-- A proporção é ajustada para A4; se a arte não for A4, ela é encaixada preservando o formato (com margem branca ao redor, se necessário).
-- Nenhuma alteração no fluxo do app, no armazenamento local nem nas telas.
-
-## Pendência
-
-Preciso que você anexe a imagem padrão (PNG ou JPG) na próxima mensagem — assim que ela chegar, aplico exatamente como descrito acima.
+- A imagem é publicada como asset do projeto (pointer `.asset.json`) e carregada como data URL no momento de gerar o PDF, para o `jspdf` conseguir embuti-la offline.
+- Em `src/lib/pdf.ts`: desenhar a imagem em (0,0) com 210x297 mm antes de qualquer conteúdo da página 1, usando `GState` quando precisar de transparência; ajustar o `y` inicial e remover o retângulo azul-petróleo do topo.
+- `buildInspectionPdf` passa a ser assíncrono (carregamento da imagem), com ajuste nos chamadores em `src/routes/inspecao.$id.tsx` e nas funções de download/compartilhar.
+- Nenhuma mudança nas telas, no armazenamento local ou no fluxo do app.
