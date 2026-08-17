@@ -85,14 +85,14 @@ function InspecaoDetalhe() {
     });
   };
 
-  const gerarPdf = () => {
+  const gerarPdf = async () => {
     if (!inspecao) return;
     const preenchidas = AREAS.filter((a) => inspecao.areas[a.id]);
     if (preenchidas.length === 0) {
       toast.error("Preencha ao menos uma área antes de gerar o PDF.");
       return;
     }
-    downloadInspectionPdf(inspecao);
+    await downloadInspectionPdf(inspecao);
     toast.success("PDF gerado com sucesso.");
   };
 
