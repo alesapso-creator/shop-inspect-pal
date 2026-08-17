@@ -43,7 +43,7 @@ function slug(value: string) {
   );
 }
 
-export function buildInspectionPdf(inspection: Inspection): jsPDF {
+export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   let y = M;
 
@@ -54,17 +54,23 @@ export function buildInspectionPdf(inspection: Inspection): jsPDF {
     }
   };
 
-  // Cabeçalho
-  doc.setFillColor(17, 58, 66);
-  doc.rect(0, 0, W, 32, "F");
-  doc.setTextColor(255, 255, 255);
+  // Papel timbrado na primeira página
+  const bg = await loadTimbre();
+  if (bg) {
+    const props = doc.getImageProperties(bg);
+    const imgH = (props.height / props.width) * W;
+    doc.addImage(bg, "JPEG", 0, 0, W, imgH);
+  }
+
+  doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text("Relatório de Inspeção de Loja", M, 15);
+  doc.text("Relatório de Inspeção de Loja", M, bg ? 52 : 15);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, M, 23);
-  y = 42;
+  doc.setTextColor(110, 110, 110);
+  doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, M, bg ? 59 : 23);
+  y = bg ? 74 : 42;
 
   doc.setTextColor(20, 20, 20);
   const info: [string, string][] = [
