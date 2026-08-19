@@ -107,6 +107,25 @@ function InspecaoDetalhe() {
     toast.success("PDF gerado com sucesso.");
   };
 
+  const compartilharWhatsApp = async () => {
+    if (!inspecao) return;
+    const preenchidas = AREAS.filter((a) => inspecao.areas[a.id]);
+    if (preenchidas.length === 0) {
+      toast.error("Preencha ao menos uma área antes de compartilhar.");
+      return;
+    }
+    const compartilhado = await shareInspectionPdf(inspecao);
+    if (compartilhado) {
+      toast.success("Escolha o WhatsApp para enviar o relatório.");
+      return;
+    }
+    const texto = `Relatório de inspeção — ${inspecao.loja || "Loja"} (${inspecao.rede || "Rede"})`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
+    toast.success("PDF baixado. Anexe o arquivo na conversa do WhatsApp.");
+  };
+
+
+
   if (!inspecao) {
     return (
       <AppShell title="Inspeção" backTo={{ to: "/" }}>
