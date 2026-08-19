@@ -47,8 +47,11 @@ export const emptyArea = (): AreaEntry => ({
   status: null,
   problemas: "",
   oportunidades: "",
+  colaborador: "",
+  treinamentos: "",
   fotos: [],
 });
+
 
 export function newInspection(): Inspection {
   const now = Date.now();
