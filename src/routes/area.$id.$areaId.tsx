@@ -6,15 +6,18 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import {
   areaLabel,
   emptyArea,
+  isTrainingArea,
   STATUS,
   type AreaEntry,
   type AreaId,
   type Inspection,
   type StatusId,
 } from "@/lib/inspection";
+
 import { getInspection, saveInspection } from "@/lib/inspection-store";
 import { filesToDataUrls } from "@/lib/photo";
 
@@ -51,9 +54,11 @@ const STATUS_ACTIVE: Record<StatusId, string> = {
 
 function AreaForm() {
   const { id, areaId } = Route.useParams();
+  const treinamento = isTrainingArea(areaId);
   const navigate = useNavigate();
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
+
 
   const [inspecao, setInspecao] = useState<Inspection | null>(null);
   const [entry, setEntry] = useState<AreaEntry>(emptyArea());
@@ -120,57 +125,86 @@ function AreaForm() {
       subtitle={inspecao.loja || "Loja sem nome"}
       backTo={{ to: "/inspecao/$id", params: { id } }}
     >
-      <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-          Situação
-        </h2>
-        <div className="grid gap-2">
-          {STATUS.map((s) => {
-            const Icon = STATUS_ICON[s.id];
-            const active = entry.status === s.id;
-            return (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => patch({ status: s.id })}
-                className={`flex h-14 items-center gap-3 rounded-2xl border-2 px-4 text-left font-semibold transition-colors ${
-                  active
-                    ? STATUS_ACTIVE[s.id]
-                    : "border-border bg-card text-card-foreground"
-                }`}
-              >
-                <Icon className="size-5 shrink-0" />
-                {s.label}
-              </button>
-            );
-          })}
-        </div>
-      </section>
+      {treinamento ? (
+        <section className="grid gap-4">
+          <div className="grid gap-1.5">
+            <Label htmlFor="colaborador">Colaborador treinado</Label>
+            <Input
+              id="colaborador"
+              placeholder="Nome do colaborador"
+              value={entry.colaborador ?? ""}
+              onChange={(e) => setEntry({ ...entry, colaborador: e.target.value })}
+              onBlur={() => void salvar(entry)}
+            />
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="treinamentos">Treinamentos realizados</Label>
+            <Textarea
+              id="treinamentos"
+              rows={6}
+              placeholder="Descreva quais treinamentos foram realizados…"
+              value={entry.treinamentos ?? ""}
+              onChange={(e) => setEntry({ ...entry, treinamentos: e.target.value })}
+              onBlur={() => void salvar(entry)}
+            />
+          </div>
+        </section>
+      ) : (
+        <>
+          <section>
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Situação
+            </h2>
+            <div className="grid gap-2">
+              {STATUS.map((s) => {
+                const Icon = STATUS_ICON[s.id];
+                const active = entry.status === s.id;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => patch({ status: s.id })}
+                    className={`flex h-14 items-center gap-3 rounded-2xl border-2 px-4 text-left font-semibold transition-colors ${
+                      active
+                        ? STATUS_ACTIVE[s.id]
+                        : "border-border bg-card text-card-foreground"
+                    }`}
+                  >
+                    <Icon className="size-5 shrink-0" />
+                    {s.label}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
-      <section className="mt-6 grid gap-4">
-        <div className="grid gap-1.5">
-          <Label htmlFor="problemas">Problemas encontrados</Label>
-          <Textarea
-            id="problemas"
-            rows={5}
-            placeholder="Descreva o que foi encontrado…"
-            value={entry.problemas}
-            onChange={(e) => setEntry({ ...entry, problemas: e.target.value })}
-            onBlur={() => void salvar(entry)}
-          />
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="oportunidades">Oportunidades</Label>
-          <Textarea
-            id="oportunidades"
-            rows={5}
-            placeholder="Sugestões de melhoria…"
-            value={entry.oportunidades}
-            onChange={(e) => setEntry({ ...entry, oportunidades: e.target.value })}
-            onBlur={() => void salvar(entry)}
-          />
-        </div>
-      </section>
+          <section className="mt-6 grid gap-4">
+            <div className="grid gap-1.5">
+              <Label htmlFor="problemas">Problemas encontrados</Label>
+              <Textarea
+                id="problemas"
+                rows={5}
+                placeholder="Descreva o que foi encontrado…"
+                value={entry.problemas}
+                onChange={(e) => setEntry({ ...entry, problemas: e.target.value })}
+                onBlur={() => void salvar(entry)}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="oportunidades">Oportunidades</Label>
+              <Textarea
+                id="oportunidades"
+                rows={5}
+                placeholder="Sugestões de melhoria…"
+                value={entry.oportunidades}
+                onChange={(e) => setEntry({ ...entry, oportunidades: e.target.value })}
+                onBlur={() => void salvar(entry)}
+              />
+            </div>
+          </section>
+        </>
+      )}
+
 
       <section className="mt-6">
         <div className="mb-2 flex items-center justify-between">

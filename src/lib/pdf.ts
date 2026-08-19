@@ -1,5 +1,13 @@
 import { jsPDF } from "jspdf";
-import { AREAS, formatDate, statusLabel, type Inspection, type StatusId } from "./inspection";
+import {
+  AREAS,
+  formatDate,
+  isTrainingArea,
+  statusLabel,
+  type Inspection,
+  type StatusId,
+} from "./inspection";
+
 import timbre from "@/assets/timbre-friboi.jpg.asset.json";
 
 let timbreCache: string | null = null;
@@ -105,8 +113,13 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
   doc.setFontSize(10);
   filled.forEach((area) => {
     const entry = inspection.areas[area.id]!;
+    const training = isTrainingArea(area.id);
     ensure(8);
-    const rgb = entry.status ? STATUS_RGB[entry.status] : ([120, 120, 120] as [number, number, number]);
+    const rgb = training
+      ? ([20, 90, 150] as [number, number, number])
+      : entry.status
+        ? STATUS_RGB[entry.status]
+        : ([120, 120, 120] as [number, number, number]);
     doc.setFillColor(...rgb);
     doc.circle(M + 1.6, y - 1.4, 1.6, "F");
     doc.setTextColor(20, 20, 20);
@@ -114,7 +127,7 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
     doc.text(area.label, M + 6, y);
     doc.setTextColor(...rgb);
     doc.setFont("helvetica", "bold");
-    doc.text(statusLabel(entry.status), W - M, y, { align: "right" });
+    doc.text(training ? "Registrado" : statusLabel(entry.status), W - M, y, { align: "right" });
     y += 7;
   });
   doc.setTextColor(20, 20, 20);
@@ -123,8 +136,13 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
   // Seções por área
   filled.forEach((area) => {
     const entry = inspection.areas[area.id]!;
+    const training = isTrainingArea(area.id);
     ensure(30);
-    const rgb = entry.status ? STATUS_RGB[entry.status] : ([120, 120, 120] as [number, number, number]);
+    const rgb = training
+      ? ([20, 90, 150] as [number, number, number])
+      : entry.status
+        ? STATUS_RGB[entry.status]
+        : ([120, 120, 120] as [number, number, number]);
 
     doc.setFillColor(240, 244, 245);
     doc.rect(M, y - 5, CONTENT, 10, "F");
@@ -136,7 +154,9 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
     doc.text(area.label, M + 5, y + 1.5);
     doc.setTextColor(...rgb);
     doc.setFontSize(10);
-    doc.text(statusLabel(entry.status), W - M - 2, y + 1.5, { align: "right" });
+    doc.text(training ? "Registrado" : statusLabel(entry.status), W - M - 2, y + 1.5, {
+      align: "right",
+    });
     doc.setTextColor(20, 20, 20);
     y += 12;
 
@@ -156,8 +176,14 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
       y += 3;
     };
 
-    block("Problemas encontrados", entry.problemas);
-    block("Oportunidades", entry.oportunidades);
+    if (training) {
+      block("Colaborador treinado", entry.colaborador ?? "");
+      block("Treinamentos realizados", entry.treinamentos ?? "");
+    } else {
+      block("Problemas encontrados", entry.problemas);
+      block("Oportunidades", entry.oportunidades);
+    }
+
 
     if (entry.fotos.length) {
       doc.setFont("helvetica", "bold");

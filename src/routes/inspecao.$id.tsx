@@ -7,6 +7,8 @@ import {
   CircleDashed,
   ConciergeBell,
   FileDown,
+  GraduationCap,
+  Share2,
   ShoppingBasket,
   Snowflake,
   X,
@@ -17,9 +19,16 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AREAS, statusLabel, type Inspection, type StatusId } from "@/lib/inspection";
+import {
+  AREAS,
+  isTrainingArea,
+  statusLabel,
+  type Inspection,
+  type StatusId,
+} from "@/lib/inspection";
 import { getInspection, saveInspection } from "@/lib/inspection-store";
-import { downloadInspectionPdf } from "@/lib/pdf";
+import { downloadInspectionPdf, shareInspectionPdf } from "@/lib/pdf";
+
 
 export const Route = createFileRoute("/inspecao/$id")({
   head: () => ({
@@ -44,7 +53,9 @@ const AREA_ICONS: Record<string, LucideIcon> = {
   ShoppingBasket,
   Snowflake,
   ChefHat,
+  GraduationCap,
 };
+
 
 const STATUS_ICON: Record<StatusId, LucideIcon> = {
   conforme: Check,
@@ -95,6 +106,25 @@ function InspecaoDetalhe() {
     await downloadInspectionPdf(inspecao);
     toast.success("PDF gerado com sucesso.");
   };
+
+  const compartilharWhatsApp = async () => {
+    if (!inspecao) return;
+    const preenchidas = AREAS.filter((a) => inspecao.areas[a.id]);
+    if (preenchidas.length === 0) {
+      toast.error("Preencha ao menos uma área antes de compartilhar.");
+      return;
+    }
+    const compartilhado = await shareInspectionPdf(inspecao);
+    if (compartilhado) {
+      toast.success("Escolha o WhatsApp para enviar o relatório.");
+      return;
+    }
+    const texto = `Relatório de inspeção — ${inspecao.loja || "Loja"} (${inspecao.rede || "Rede"})`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
+    toast.success("PDF baixado. Anexe o arquivo na conversa do WhatsApp.");
+  };
+
+
 
   if (!inspecao) {
     return (
@@ -160,8 +190,29 @@ function InspecaoDetalhe() {
         {AREAS.map((area) => {
           const Icon = AREA_ICONS[area.icon] ?? CircleDashed;
           const entry = inspecao.areas[area.id];
+          const treinamento = isTrainingArea(area.id);
           const status = entry?.status ?? null;
-          const StatusIcon = status ? STATUS_ICON[status] : CircleDashed;
+          const StatusIcon = treinamento
+            ? entry
+              ? Check
+              : CircleDashed
+            : status
+              ? STATUS_ICON[status]
+              : CircleDashed;
+          const badgeClass = treinamento
+            ? entry
+              ? "bg-ok/15 text-ok"
+              : "bg-muted text-muted-foreground"
+            : status
+              ? STATUS_CLASS[status]
+              : "bg-muted text-muted-foreground";
+          const badgeLabel = treinamento
+            ? entry
+              ? "Registrado"
+              : "Não preenchido"
+            : status
+              ? statusLabel(status)
+              : "Não preenchido";
           return (
             <Link
               key={area.id}
@@ -174,25 +225,32 @@ function InspecaoDetalhe() {
                 {area.label}
               </p>
               <span
-                className={`mt-2 inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                  status ? STATUS_CLASS[status] : "bg-muted text-muted-foreground"
-                }`}
+                className={`mt-2 inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${badgeClass}`}
               >
                 <StatusIcon className="size-3" />
-                {status ? statusLabel(status) : "Não preenchido"}
+                {badgeLabel}
               </span>
             </Link>
           );
         })}
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 p-4 backdrop-blur">
-        <div className="mx-auto max-w-3xl">
+      <div className="fixed inset-x-0 bottom-0 space-y-2 border-t border-border bg-background/95 p-4 backdrop-blur">
+        <div className="mx-auto max-w-3xl space-y-2">
           <Button size="lg" className="h-13 w-full text-base" onClick={gerarPdf}>
             <FileDown className="size-5" /> Finalizar e gerar PDF
           </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="h-13 w-full text-base"
+            onClick={compartilharWhatsApp}
+          >
+            <Share2 className="size-5" /> Compartilhar no WhatsApp
+          </Button>
         </div>
       </div>
+
     </AppShell>
   );
 }
