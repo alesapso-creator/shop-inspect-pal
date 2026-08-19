@@ -54,9 +54,11 @@ const STATUS_ACTIVE: Record<StatusId, string> = {
 
 function AreaForm() {
   const { id, areaId } = Route.useParams();
+  const treinamento = isTrainingArea(areaId);
   const navigate = useNavigate();
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
+
 
   const [inspecao, setInspecao] = useState<Inspection | null>(null);
   const [entry, setEntry] = useState<AreaEntry>(emptyArea());
