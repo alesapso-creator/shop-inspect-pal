@@ -63,6 +63,7 @@ export const emptyArea = (): AreaEntry => ({
   oportunidades: "",
   colaborador: "",
   treinamentos: "",
+  nivel: null,
   fotos: [],
 });
 
