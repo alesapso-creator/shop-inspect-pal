@@ -6,15 +6,18 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import {
   areaLabel,
   emptyArea,
+  isTrainingArea,
   STATUS,
   type AreaEntry,
   type AreaId,
   type Inspection,
   type StatusId,
 } from "@/lib/inspection";
+
 import { getInspection, saveInspection } from "@/lib/inspection-store";
 import { filesToDataUrls } from "@/lib/photo";
 
