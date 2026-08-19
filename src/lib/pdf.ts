@@ -1,5 +1,13 @@
 import { jsPDF } from "jspdf";
-import { AREAS, formatDate, statusLabel, type Inspection, type StatusId } from "./inspection";
+import {
+  AREAS,
+  formatDate,
+  isTrainingArea,
+  statusLabel,
+  type Inspection,
+  type StatusId,
+} from "./inspection";
+
 import timbre from "@/assets/timbre-friboi.jpg.asset.json";
 
 let timbreCache: string | null = null;
