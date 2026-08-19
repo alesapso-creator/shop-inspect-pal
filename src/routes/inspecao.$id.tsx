@@ -7,6 +7,8 @@ import {
   CircleDashed,
   ConciergeBell,
   FileDown,
+  GraduationCap,
+  Share2,
   ShoppingBasket,
   Snowflake,
   X,
@@ -17,9 +19,16 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AREAS, statusLabel, type Inspection, type StatusId } from "@/lib/inspection";
+import {
+  AREAS,
+  isTrainingArea,
+  statusLabel,
+  type Inspection,
+  type StatusId,
+} from "@/lib/inspection";
 import { getInspection, saveInspection } from "@/lib/inspection-store";
-import { downloadInspectionPdf } from "@/lib/pdf";
+import { downloadInspectionPdf, shareInspectionPdf } from "@/lib/pdf";
+
 
 export const Route = createFileRoute("/inspecao/$id")({
   head: () => ({
