@@ -53,7 +53,9 @@ const AREA_ICONS: Record<string, LucideIcon> = {
   ShoppingBasket,
   Snowflake,
   ChefHat,
+  GraduationCap,
 };
+
 
 const STATUS_ICON: Record<StatusId, LucideIcon> = {
   conforme: Check,
