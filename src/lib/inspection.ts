@@ -22,12 +22,26 @@ export function isTrainingArea(id: string) {
   return id === TRAINING_AREA_ID;
 }
 
+export type NivelId = "iniciante" | "bronze" | "prata" | "ouro";
+
+export const NIVEIS: { id: NivelId; label: string }[] = [
+  { id: "iniciante", label: "Iniciante" },
+  { id: "bronze", label: "Bronze" },
+  { id: "prata", label: "Prata" },
+  { id: "ouro", label: "Ouro" },
+];
+
+export function nivelLabel(id: NivelId | null | undefined) {
+  return NIVEIS.find((n) => n.id === id)?.label ?? "Não informado";
+}
+
 export type AreaEntry = {
   status: StatusId | null;
   problemas: string;
   oportunidades: string;
   colaborador?: string;
   treinamentos?: string;
+  nivel?: NivelId | null;
   fotos: string[]; // JPEG data URLs
 };
 
@@ -49,6 +63,7 @@ export const emptyArea = (): AreaEntry => ({
   oportunidades: "",
   colaborador: "",
   treinamentos: "",
+  nivel: null,
   fotos: [],
 });
 
