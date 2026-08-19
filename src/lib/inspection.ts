@@ -11,16 +11,26 @@ export const AREAS = [
   { id: "balcao_autosservico", label: "Balcão de Autosserviço", icon: "ShoppingBasket" },
   { id: "camara_fria", label: "Câmara Fria", icon: "Snowflake" },
   { id: "area_manipulacao", label: "Área de Manipulação", icon: "ChefHat" },
+  { id: "treinamentos", label: "Treinamentos", icon: "GraduationCap" },
 ] as const;
 
 export type AreaId = (typeof AREAS)[number]["id"];
+
+export const TRAINING_AREA_ID = "treinamentos";
+
+export function isTrainingArea(id: string) {
+  return id === TRAINING_AREA_ID;
+}
 
 export type AreaEntry = {
   status: StatusId | null;
   problemas: string;
   oportunidades: string;
+  colaborador?: string;
+  treinamentos?: string;
   fotos: string[]; // JPEG data URLs
 };
+
 
 export type Inspection = {
   id: string;
