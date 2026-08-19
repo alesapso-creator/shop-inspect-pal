@@ -11,6 +11,7 @@ import {
   areaLabel,
   emptyArea,
   isTrainingArea,
+  NIVEIS,
   STATUS,
   type AreaEntry,
   type AreaId,
