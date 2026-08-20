@@ -118,6 +118,32 @@ function AreaForm() {
     }
   };
 
+  const analisarComIA = async () => {
+    if (entry.fotos.length === 0) {
+      toast.error("Adicione fotos antes de analisar.");
+      return;
+    }
+    setAnalisando(true);
+    try {
+      const r = await analisarFotos({ data: { area: areaLabel(areaId), fotos: entry.fotos } });
+      const juntar = (atual: string, novo: string) =>
+        !novo ? atual : atual.trim() ? `${atual.trim()}\n${novo}` : novo;
+      const next: AreaEntry = {
+        ...entry,
+        status: entry.status ?? r.status,
+        problemas: juntar(entry.problemas, r.problemas),
+        oportunidades: juntar(entry.oportunidades, r.oportunidades),
+      };
+      setEntry(next);
+      void salvar(next);
+      toast.success("Análise concluída. Revise o texto sugerido.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível analisar as fotos.");
+    } finally {
+      setAnalisando(false);
+    }
+  };
+
   if (!inspecao) {
     return (
       <AppShell title="Área" backTo={{ to: "/" }}>
