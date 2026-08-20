@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, Camera, Check, ImagePlus, Save, Trash2, X, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Camera, Check, ImagePlus, Loader2, Save, Sparkles, Trash2, X, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
