@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, Camera, Check, ImagePlus, Save, Trash2, X, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Camera, Check, ImagePlus, Loader2, Save, Sparkles, Trash2, X, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
 
 import { getInspection, saveInspection } from "@/lib/inspection-store";
 import { filesToDataUrls } from "@/lib/photo";
+import { analisarFotos } from "@/lib/ai.functions";
 
 export const Route = createFileRoute("/area/$id/$areaId")({
   head: () => ({
@@ -64,6 +65,7 @@ function AreaForm() {
   const [inspecao, setInspecao] = useState<Inspection | null>(null);
   const [entry, setEntry] = useState<AreaEntry>(emptyArea());
   const [processando, setProcessando] = useState(false);
+  const [analisando, setAnalisando] = useState(false);
 
   const load = useCallback(async () => {
     const found = await getInspection(id);
@@ -113,6 +115,32 @@ function AreaForm() {
       toast.error("Não foi possível adicionar as fotos.");
     } finally {
       setProcessando(false);
+    }
+  };
+
+  const analisarComIA = async () => {
+    if (entry.fotos.length === 0) {
+      toast.error("Adicione fotos antes de analisar.");
+      return;
+    }
+    setAnalisando(true);
+    try {
+      const r = await analisarFotos({ data: { area: areaLabel(areaId), fotos: entry.fotos } });
+      const juntar = (atual: string, novo: string) =>
+        !novo ? atual : atual.trim() ? `${atual.trim()}\n${novo}` : novo;
+      const next: AreaEntry = {
+        ...entry,
+        status: entry.status ?? r.status,
+        problemas: juntar(entry.problemas, r.problemas),
+        oportunidades: juntar(entry.oportunidades, r.oportunidades),
+      };
+      setEntry(next);
+      void salvar(next);
+      toast.success("Análise concluída. Revise o texto sugerido.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível analisar as fotos.");
+    } finally {
+      setAnalisando(false);
     }
   };
 
@@ -306,6 +334,31 @@ function AreaForm() {
         />
         {processando ? (
           <p className="mt-2 text-xs text-muted-foreground">Processando fotos…</p>
+        ) : null}
+
+        {!treinamento ? (
+          <div className="mt-3">
+            <Button
+              type="button"
+              variant="secondary"
+              className="h-12 w-full"
+              disabled={analisando || processando || entry.fotos.length === 0}
+              onClick={() => void analisarComIA()}
+            >
+              {analisando ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" /> Analisando fotos…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="size-4" /> Analisar fotos com IA
+                </>
+              )}
+            </Button>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              A IA sugere situação, problemas e oportunidades a partir das fotos. Revise antes de salvar.
+            </p>
+          </div>
         ) : null}
       </section>
 
