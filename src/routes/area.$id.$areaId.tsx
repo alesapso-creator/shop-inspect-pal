@@ -21,6 +21,7 @@ import {
 
 import { getInspection, saveInspection } from "@/lib/inspection-store";
 import { filesToDataUrls } from "@/lib/photo";
+import { analisarFotos } from "@/lib/ai.functions";
 
 export const Route = createFileRoute("/area/$id/$areaId")({
   head: () => ({
