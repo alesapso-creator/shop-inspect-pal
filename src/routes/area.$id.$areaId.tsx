@@ -335,6 +335,31 @@ function AreaForm() {
         {processando ? (
           <p className="mt-2 text-xs text-muted-foreground">Processando fotos…</p>
         ) : null}
+
+        {!treinamento ? (
+          <div className="mt-3">
+            <Button
+              type="button"
+              variant="secondary"
+              className="h-12 w-full"
+              disabled={analisando || processando || entry.fotos.length === 0}
+              onClick={() => void analisarComIA()}
+            >
+              {analisando ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" /> Analisando fotos…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="size-4" /> Analisar fotos com IA
+                </>
+              )}
+            </Button>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              A IA sugere situação, problemas e oportunidades a partir das fotos. Revise antes de salvar.
+            </p>
+          </div>
+        ) : null}
       </section>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 p-4 backdrop-blur">
