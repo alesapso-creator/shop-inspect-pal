@@ -65,6 +65,7 @@ function AreaForm() {
   const [inspecao, setInspecao] = useState<Inspection | null>(null);
   const [entry, setEntry] = useState<AreaEntry>(emptyArea());
   const [processando, setProcessando] = useState(false);
+  const [analisando, setAnalisando] = useState(false);
 
   const load = useCallback(async () => {
     const found = await getInspection(id);
