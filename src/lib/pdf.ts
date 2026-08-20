@@ -177,6 +177,7 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
     };
 
     if (training) {
+      block("Nível", entry.nivel ? nivelLabel(entry.nivel) : "");
       block("Colaborador treinado", entry.colaborador ?? "");
       block("Treinamentos realizados", entry.treinamentos ?? "");
     } else {
