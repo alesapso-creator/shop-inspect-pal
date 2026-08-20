@@ -3,6 +3,7 @@ import {
   AREAS,
   formatDate,
   isTrainingArea,
+  nivelLabel,
   statusLabel,
   type Inspection,
   type StatusId,
