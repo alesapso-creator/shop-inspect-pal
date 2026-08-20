@@ -81,6 +81,10 @@ function AreaForm() {
 
   const salvar = async (next: AreaEntry, voltar = false) => {
     if (!inspecao) return;
+    if (voltar && !treinamento && !next.status) {
+      toast.error("Escolha a situação da área antes de salvar.");
+      return;
+    }
     const updated: Inspection = {
       ...inspecao,
       areas: { ...inspecao.areas, [areaId as AreaId]: next },
