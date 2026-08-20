@@ -133,6 +133,28 @@ function AreaForm() {
       {treinamento ? (
         <section className="grid gap-4">
           <div className="grid gap-1.5">
+            <Label>Nível</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {NIVEIS.map((n) => {
+                const active = entry.nivel === n.id;
+                return (
+                  <button
+                    key={n.id}
+                    type="button"
+                    onClick={() => patch({ nivel: n.id })}
+                    className={`h-12 rounded-2xl border-2 px-3 text-sm font-semibold transition-colors ${
+                      active
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-card text-card-foreground"
+                    }`}
+                  >
+                    {n.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="grid gap-1.5">
             <Label htmlFor="colaborador">Colaborador treinado</Label>
             <Input
               id="colaborador"
