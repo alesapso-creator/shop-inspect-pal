@@ -134,11 +134,12 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
   doc.setTextColor(20, 20, 20);
   y += 4;
 
-  // Seções por área
+  // Seções por área — uma página para cada
   filled.forEach((area) => {
     const entry = inspection.areas[area.id]!;
     const training = isTrainingArea(area.id);
-    ensure(30);
+    doc.addPage();
+    y = M + 5;
     const rgb = training
       ? ([20, 90, 150] as [number, number, number])
       : entry.status
