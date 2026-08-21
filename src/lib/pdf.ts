@@ -193,21 +193,22 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
       ensure(8);
       doc.text("Fotos", M, y);
       y += 5;
-      const gap = 5;
-      const imgW = (CONTENT - gap) / 2;
-      for (let i = 0; i < entry.fotos.length; i += 2) {
-        const pair = entry.fotos.slice(i, i + 2);
-        const heights = pair.map((src) => {
+      const gap = 3;
+      const cols = 3;
+      const imgW = (CONTENT - gap * (cols - 1)) / cols;
+      for (let i = 0; i < entry.fotos.length; i += cols) {
+        const group = entry.fotos.slice(i, i + cols);
+        const heights = group.map((src) => {
           const props = doc.getImageProperties(src);
           return (props.height / props.width) * imgW;
         });
         const rowH = Math.max(...heights);
-        ensure(rowH + 4);
-        pair.forEach((src, j) => {
+        ensure(rowH + 3);
+        group.forEach((src, j) => {
           const imgH = heights[j] ?? rowH;
           doc.addImage(src, "JPEG", M + j * (imgW + gap), y, imgW, imgH);
         });
-        y += rowH + 4;
+        y += rowH + 3;
       }
       y += 2;
     }
