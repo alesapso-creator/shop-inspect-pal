@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InspecaoIdRouteImport } from './routes/inspecao.$id'
+import { Route as RendimentoIndexRouteImport } from './routes/rendimento.index'
 import { Route as AreaIdAreaIdRouteImport } from './routes/area.$id.$areaId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const InspecaoIdRoute = InspecaoIdRouteImport.update({
   path: '/inspecao/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RendimentoIndexRoute = RendimentoIndexRouteImport.update({
+  id: '/rendimento/',
+  path: '/rendimento/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AreaIdAreaIdRoute = AreaIdAreaIdRouteImport.update({
   id: '/area/$id/$areaId',
   path: '/area/$id/$areaId',
@@ -32,30 +38,34 @@ const AreaIdAreaIdRoute = AreaIdAreaIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/inspecao/$id': typeof InspecaoIdRoute
+  '/rendimento/': typeof RendimentoIndexRoute
   '/area/$id/$areaId': typeof AreaIdAreaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/inspecao/$id': typeof InspecaoIdRoute
+  '/rendimento': typeof RendimentoIndexRoute
   '/area/$id/$areaId': typeof AreaIdAreaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/inspecao/$id': typeof InspecaoIdRoute
+  '/rendimento/': typeof RendimentoIndexRoute
   '/area/$id/$areaId': typeof AreaIdAreaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/inspecao/$id' | '/area/$id/$areaId'
+  fullPaths: '/' | '/inspecao/$id' | '/rendimento/' | '/area/$id/$areaId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/inspecao/$id' | '/area/$id/$areaId'
-  id: '__root__' | '/' | '/inspecao/$id' | '/area/$id/$areaId'
+  to: '/' | '/inspecao/$id' | '/rendimento' | '/area/$id/$areaId'
+  id: '__root__' | '/' | '/inspecao/$id' | '/rendimento/' | '/area/$id/$areaId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InspecaoIdRoute: typeof InspecaoIdRoute
+  RendimentoIndexRoute: typeof RendimentoIndexRoute
   AreaIdAreaIdRoute: typeof AreaIdAreaIdRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InspecaoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rendimento/': {
+      id: '/rendimento/'
+      path: '/rendimento'
+      fullPath: '/rendimento/'
+      preLoaderRoute: typeof RendimentoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/area/$id/$areaId': {
       id: '/area/$id/$areaId'
       path: '/area/$id/$areaId'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InspecaoIdRoute: InspecaoIdRoute,
+  RendimentoIndexRoute: RendimentoIndexRoute,
   AreaIdAreaIdRoute: AreaIdAreaIdRoute,
 }
 export const routeTree = rootRouteImport
