@@ -50,8 +50,21 @@ function Home() {
 
   return (
     <AppShell title="Inspeções de Loja" subtitle="Salvas neste aparelho">
+      <Link
+        to="/rendimento"
+        className="mb-4 flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition-colors active:bg-accent"
+      >
+        <Beef className="size-8 text-primary" />
+        <div className="min-w-0">
+          <p className="font-semibold text-card-foreground">Rendimento Bovino</p>
+          <p className="text-sm text-muted-foreground">
+            Pesos, exsudação, perda e relatório em PDF
+          </p>
+        </div>
+      </Link>
       {items === null ? (
         <p className="py-10 text-center text-sm text-muted-foreground">Carregando…</p>
+
       ) : items.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border py-14 text-center">
           <ClipboardList className="mx-auto size-10 text-muted-foreground" />
