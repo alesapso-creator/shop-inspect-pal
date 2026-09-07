@@ -114,7 +114,9 @@ export type Calculo = {
   dias: number | null;
 };
 
-export function calcular(r: Rendimento): Calculo {
+export type CalcInput = Medicao & { data: string };
+
+export function calcular(r: CalcInput): Calculo {
   const fechado = num(r.pesoFechado);
   const inatura = num(r.pesoInatura);
   const sebo = num(r.pesoSebo);
