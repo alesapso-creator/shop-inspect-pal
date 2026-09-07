@@ -18,7 +18,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { compressToDataUrl } from "@/lib/photo";
-import { calcular, kg, num, pct, type Corte, type Rendimento } from "@/lib/rendimento";
+import {
+  calcular,
+  kg,
+  newMedicao,
+  num,
+  pct,
+  type Corte,
+  type Medicao,
+  type Rendimento,
+} from "@/lib/rendimento";
 import { getRendimento, saveRendimento } from "@/lib/rendimento-store";
 import { downloadRendimentoPdf, shareRendimentoPdf } from "@/lib/rendimento-pdf";
 
