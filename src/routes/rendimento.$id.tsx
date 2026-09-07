@@ -458,3 +458,156 @@ function Resultado({
     </div>
   );
 }
+
+function MedicaoExtra({
+  index,
+  medicao,
+  data,
+  onChange,
+  onRemove,
+}: {
+  index: number;
+  medicao: Medicao;
+  data: string;
+  onChange: (patch: Partial<Medicao>) => void;
+  onRemove: () => void;
+}) {
+  const c = calcular({ ...medicao, data });
+
+  const setCorte = (corteId: string, patch: Partial<Corte>) =>
+    onChange({ cortes: medicao.cortes.map((x) => (x.id === corteId ? { ...x, ...patch } : x)) });
+
+  return (
+    <section className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+      <div className="flex items-center justify-between">
+        <p className="font-semibold text-card-foreground">{index}º rendimento</p>
+        <button
+          aria-label="Remover rendimento"
+          onClick={onRemove}
+          className="rounded-full p-2 text-muted-foreground hover:bg-accent"
+        >
+          <X className="size-4" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Campo label="SIF" value={medicao.sif} onChange={(v) => onChange({ sif: v })} />
+        <Campo
+          label="Data de produção"
+          type="date"
+          value={medicao.dataProducao}
+          onChange={(v) => onChange({ dataProducao: v })}
+        />
+        <Campo
+          label="Corte"
+          value={medicao.corteBovino}
+          onChange={(v) => onChange({ corteBovino: v })}
+        />
+        <Campo label="Marca" value={medicao.marca} onChange={(v) => onChange({ marca: v })} />
+      </div>
+
+      <BlocoPeso
+        titulo="Peça fechada (pesar com tara)"
+        peso={medicao.pesoFechado}
+        foto={medicao.fotoFechado}
+        onPeso={(v) => onChange({ pesoFechado: v })}
+        onFoto={(v) => onChange({ fotoFechado: v })}
+        fotoKey={`fotoFechado-${medicao.id}`}
+      />
+      <BlocoPeso
+        titulo="Produto inatura (produto sem a embalagem)"
+        peso={medicao.pesoInatura}
+        foto={medicao.fotoInatura}
+        onPeso={(v) => onChange({ pesoInatura: v })}
+        onFoto={(v) => onChange({ fotoInatura: v })}
+        fotoKey={`fotoInatura-${medicao.id}`}
+      />
+      <BlocoPeso
+        titulo="Sebo"
+        peso={medicao.pesoSebo}
+        foto={medicao.fotoSebo}
+        onPeso={(v) => onChange({ pesoSebo: v })}
+        onFoto={(v) => onChange({ fotoSebo: v })}
+        fotoKey={`fotoSebo-${medicao.id}`}
+      />
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Resultado
+          icon={Timer}
+          label="Tempo de Produção"
+          value={c.dias === null ? "Informe as datas" : `${c.dias} dia(s)`}
+          tone="text-primary"
+        />
+        <Resultado
+          icon={Droplets}
+          label="Exsudação"
+          value={`${kg(c.exsudacao)} · ${pct(c.percExsudacao)}`}
+          tone="text-primary"
+        />
+        <Resultado icon={TrendingUp} label="Rendimento" value={pct(c.rendimento)} tone="text-ok" />
+        <Resultado
+          icon={TrendingDown}
+          label="Perda total"
+          value={`${pct(c.perdaPerc)} · ${kg(c.perdaKg)}`}
+          tone="text-bad"
+        />
+      </div>
+
+      {medicao.cortes.length > 0 ? (
+        <div className="space-y-3 rounded-xl border border-border p-3">
+          {medicao.cortes.map((corte) => (
+            <div key={corte.id} className="flex items-center gap-2">
+              <Input
+                className="flex-[2]"
+                placeholder="Nome do corte"
+                value={corte.nome}
+                onChange={(e) => setCorte(corte.id, { nome: e.target.value })}
+              />
+              <Input
+                className="flex-1"
+                type="number"
+                inputMode="decimal"
+                step="0.001"
+                placeholder="kg"
+                value={corte.peso}
+                onChange={(e) => setCorte(corte.id, { peso: e.target.value })}
+              />
+              <Input
+                className="flex-1"
+                type="number"
+                inputMode="decimal"
+                step="0.001"
+                placeholder="sebo"
+                value={corte.sebo}
+                onChange={(e) => setCorte(corte.id, { sebo: e.target.value })}
+              />
+              <button
+                aria-label="Remover corte"
+                className="rounded-full p-2 text-muted-foreground hover:bg-accent"
+                onClick={() =>
+                  onChange({ cortes: medicao.cortes.filter((x) => x.id !== corte.id) })
+                }
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <Button
+        variant="outline"
+        className="h-11 w-full"
+        onClick={() =>
+          onChange({
+            cortes: [
+              ...medicao.cortes,
+              { id: crypto.randomUUID(), nome: "", peso: "", sebo: "" },
+            ],
+          })
+        }
+      >
+        <Plus className="size-4" /> Adicionar corte
+      </Button>
+    </section>
+  );
+}
