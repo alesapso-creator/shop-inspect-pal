@@ -18,7 +18,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { compressToDataUrl } from "@/lib/photo";
-import { calcular, kg, num, pct, type Corte, type Rendimento } from "@/lib/rendimento";
+import {
+  calcular,
+  kg,
+  newMedicao,
+  num,
+  pct,
+  type Corte,
+  type Medicao,
+  type Rendimento,
+} from "@/lib/rendimento";
 import { getRendimento, saveRendimento } from "@/lib/rendimento-store";
 import { downloadRendimentoPdf, shareRendimentoPdf } from "@/lib/rendimento-pdf";
 
@@ -77,6 +86,10 @@ function RendimentoForm() {
   }
 
   const c = calcular(item);
+  const extras = item.extras ?? [];
+
+  const setExtra = (extraId: string, patch: Partial<Medicao>) =>
+    update({ extras: extras.map((x) => (x.id === extraId ? { ...x, ...patch } : x)) });
 
   const setCorte = (corteId: string, patch: Partial<Corte>) =>
     update({ cortes: item.cortes.map((x) => (x.id === corteId ? { ...x, ...patch } : x)) });
@@ -275,6 +288,31 @@ function RendimentoForm() {
         </div>
       )}
 
+      <h2 className="mb-3 mt-7 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        Outros rendimentos desta visita
+      </h2>
+      <div className="space-y-4">
+        {extras.map((extra, i) => (
+          <MedicaoExtra
+            key={extra.id}
+            index={i + 2}
+            medicao={extra}
+            data={item.data}
+            onChange={(patch) => setExtra(extra.id, patch)}
+            onRemove={() => update({ extras: extras.filter((x) => x.id !== extra.id) })}
+          />
+        ))}
+        <Button
+          variant="outline"
+          className="h-12 w-full"
+          onClick={() => update({ extras: [...extras, newMedicao()] })}
+        >
+          <Plus className="size-5" /> Adicionar outro rendimento
+        </Button>
+      </div>
+
+      <div className="h-48" />
+
       <div className="fixed inset-x-0 bottom-0 space-y-2 border-t border-border bg-background/95 p-4 backdrop-blur">
         <div className="mx-auto max-w-3xl space-y-2">
           <Button size="lg" className="h-13 w-full text-base" onClick={gerarPdf}>
@@ -290,6 +328,7 @@ function RendimentoForm() {
           </Button>
         </div>
       </div>
+
     </AppShell>
   );
 }
@@ -417,5 +456,158 @@ function Resultado({
       </p>
       <p className={`mt-1 text-lg font-bold ${tone}`}>{value}</p>
     </div>
+  );
+}
+
+function MedicaoExtra({
+  index,
+  medicao,
+  data,
+  onChange,
+  onRemove,
+}: {
+  index: number;
+  medicao: Medicao;
+  data: string;
+  onChange: (patch: Partial<Medicao>) => void;
+  onRemove: () => void;
+}) {
+  const c = calcular({ ...medicao, data });
+
+  const setCorte = (corteId: string, patch: Partial<Corte>) =>
+    onChange({ cortes: medicao.cortes.map((x) => (x.id === corteId ? { ...x, ...patch } : x)) });
+
+  return (
+    <section className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+      <div className="flex items-center justify-between">
+        <p className="font-semibold text-card-foreground">{index}º rendimento</p>
+        <button
+          aria-label="Remover rendimento"
+          onClick={onRemove}
+          className="rounded-full p-2 text-muted-foreground hover:bg-accent"
+        >
+          <X className="size-4" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Campo label="SIF" value={medicao.sif} onChange={(v) => onChange({ sif: v })} />
+        <Campo
+          label="Data de produção"
+          type="date"
+          value={medicao.dataProducao}
+          onChange={(v) => onChange({ dataProducao: v })}
+        />
+        <Campo
+          label="Corte"
+          value={medicao.corteBovino}
+          onChange={(v) => onChange({ corteBovino: v })}
+        />
+        <Campo label="Marca" value={medicao.marca} onChange={(v) => onChange({ marca: v })} />
+      </div>
+
+      <BlocoPeso
+        titulo="Peça fechada (pesar com tara)"
+        peso={medicao.pesoFechado}
+        foto={medicao.fotoFechado}
+        onPeso={(v) => onChange({ pesoFechado: v })}
+        onFoto={(v) => onChange({ fotoFechado: v })}
+        fotoKey={`fotoFechado-${medicao.id}`}
+      />
+      <BlocoPeso
+        titulo="Produto inatura (produto sem a embalagem)"
+        peso={medicao.pesoInatura}
+        foto={medicao.fotoInatura}
+        onPeso={(v) => onChange({ pesoInatura: v })}
+        onFoto={(v) => onChange({ fotoInatura: v })}
+        fotoKey={`fotoInatura-${medicao.id}`}
+      />
+      <BlocoPeso
+        titulo="Sebo"
+        peso={medicao.pesoSebo}
+        foto={medicao.fotoSebo}
+        onPeso={(v) => onChange({ pesoSebo: v })}
+        onFoto={(v) => onChange({ fotoSebo: v })}
+        fotoKey={`fotoSebo-${medicao.id}`}
+      />
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Resultado
+          icon={Timer}
+          label="Tempo de Produção"
+          value={c.dias === null ? "Informe as datas" : `${c.dias} dia(s)`}
+          tone="text-primary"
+        />
+        <Resultado
+          icon={Droplets}
+          label="Exsudação"
+          value={`${kg(c.exsudacao)} · ${pct(c.percExsudacao)}`}
+          tone="text-primary"
+        />
+        <Resultado icon={TrendingUp} label="Rendimento" value={pct(c.rendimento)} tone="text-ok" />
+        <Resultado
+          icon={TrendingDown}
+          label="Perda total"
+          value={`${pct(c.perdaPerc)} · ${kg(c.perdaKg)}`}
+          tone="text-bad"
+        />
+      </div>
+
+      {medicao.cortes.length > 0 ? (
+        <div className="space-y-3 rounded-xl border border-border p-3">
+          {medicao.cortes.map((corte) => (
+            <div key={corte.id} className="flex items-center gap-2">
+              <Input
+                className="flex-[2]"
+                placeholder="Nome do corte"
+                value={corte.nome}
+                onChange={(e) => setCorte(corte.id, { nome: e.target.value })}
+              />
+              <Input
+                className="flex-1"
+                type="number"
+                inputMode="decimal"
+                step="0.001"
+                placeholder="kg"
+                value={corte.peso}
+                onChange={(e) => setCorte(corte.id, { peso: e.target.value })}
+              />
+              <Input
+                className="flex-1"
+                type="number"
+                inputMode="decimal"
+                step="0.001"
+                placeholder="sebo"
+                value={corte.sebo}
+                onChange={(e) => setCorte(corte.id, { sebo: e.target.value })}
+              />
+              <button
+                aria-label="Remover corte"
+                className="rounded-full p-2 text-muted-foreground hover:bg-accent"
+                onClick={() =>
+                  onChange({ cortes: medicao.cortes.filter((x) => x.id !== corte.id) })
+                }
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <Button
+        variant="outline"
+        className="h-11 w-full"
+        onClick={() =>
+          onChange({
+            cortes: [
+              ...medicao.cortes,
+              { id: crypto.randomUUID(), nome: "", peso: "", sebo: "" },
+            ],
+          })
+        }
+      >
+        <Plus className="size-4" /> Adicionar corte
+      </Button>
+    </section>
   );
 }
