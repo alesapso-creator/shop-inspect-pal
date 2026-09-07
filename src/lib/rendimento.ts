@@ -5,6 +5,21 @@ export type Corte = {
   sebo: string;
 };
 
+export type Medicao = {
+  id: string;
+  sif: string;
+  dataProducao: string;
+  corteBovino: string;
+  marca: string;
+  pesoFechado: string;
+  pesoInatura: string;
+  pesoSebo: string;
+  fotoFechado: string | null;
+  fotoInatura: string | null;
+  fotoSebo: string | null;
+  cortes: Corte[];
+};
+
 export type Rendimento = {
   id: string;
   rede: string;
@@ -22,9 +37,27 @@ export type Rendimento = {
   fotoInatura: string | null;
   fotoSebo: string | null;
   cortes: Corte[];
+  extras?: Medicao[];
   createdAt: number;
   updatedAt: number;
 };
+
+export function newMedicao(): Medicao {
+  return {
+    id: crypto.randomUUID(),
+    sif: "",
+    dataProducao: "",
+    corteBovino: "",
+    marca: "",
+    pesoFechado: "",
+    pesoInatura: "",
+    pesoSebo: "",
+    fotoFechado: null,
+    fotoInatura: null,
+    fotoSebo: null,
+    cortes: [],
+  };
+}
 
 export function newRendimento(): Rendimento {
   const now = Date.now();
@@ -45,6 +78,7 @@ export function newRendimento(): Rendimento {
     fotoInatura: null,
     fotoSebo: null,
     cortes: [],
+    extras: [],
     createdAt: now,
     updatedAt: now,
   };
@@ -54,6 +88,7 @@ export const num = (value: string) => {
   const n = parseFloat(String(value).replace(",", "."));
   return Number.isFinite(n) ? n : 0;
 };
+
 
 export const kg = (value: number) => `${value.toFixed(3).replace(".", ",")} kg`;
 export const pct = (value: number) => `${value.toFixed(2).replace(".", ",")} %`;
