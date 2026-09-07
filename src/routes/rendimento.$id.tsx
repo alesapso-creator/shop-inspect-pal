@@ -275,6 +275,31 @@ function RendimentoForm() {
         </div>
       )}
 
+      <h2 className="mb-3 mt-7 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        Outros rendimentos desta visita
+      </h2>
+      <div className="space-y-4">
+        {extras.map((extra, i) => (
+          <MedicaoExtra
+            key={extra.id}
+            index={i + 2}
+            medicao={extra}
+            data={item.data}
+            onChange={(patch) => setExtra(extra.id, patch)}
+            onRemove={() => update({ extras: extras.filter((x) => x.id !== extra.id) })}
+          />
+        ))}
+        <Button
+          variant="outline"
+          className="h-12 w-full"
+          onClick={() => update({ extras: [...extras, newMedicao()] })}
+        >
+          <Plus className="size-5" /> Adicionar outro rendimento
+        </Button>
+      </div>
+
+      <div className="h-48" />
+
       <div className="fixed inset-x-0 bottom-0 space-y-2 border-t border-border bg-background/95 p-4 backdrop-blur">
         <div className="mx-auto max-w-3xl space-y-2">
           <Button size="lg" className="h-13 w-full text-base" onClick={gerarPdf}>
@@ -290,6 +315,7 @@ function RendimentoForm() {
           </Button>
         </div>
       </div>
+
     </AppShell>
   );
 }
