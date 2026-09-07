@@ -153,7 +153,7 @@ function RendimentoForm() {
       </h2>
       <div className="space-y-3">
         <BlocoPeso
-          titulo="Peça fechada"
+          titulo="Peça fechada (pesar com tara)"
           peso={item.pesoFechado}
           foto={item.fotoFechado}
           onPeso={(v) => update({ pesoFechado: v })}
@@ -161,7 +161,7 @@ function RendimentoForm() {
           fotoKey="fotoFechado"
         />
         <BlocoPeso
-          titulo="Produto inatura"
+          titulo="Produto inatura (produto sem a embalagem)"
           peso={item.pesoInatura}
           foto={item.fotoInatura}
           onPeso={(v) => update({ pesoInatura: v })}
@@ -184,7 +184,7 @@ function RendimentoForm() {
       <div className="grid gap-3 sm:grid-cols-2">
         <Resultado
           icon={Timer}
-          label="Tempo de resfriamento"
+          label="Tempo de Produção"
           value={c.dias === null ? "Informe as datas" : `${c.dias} dia(s)`}
           tone="text-primary"
         />

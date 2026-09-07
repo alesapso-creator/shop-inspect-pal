@@ -96,8 +96,8 @@ export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
 
   // Pesos e fotos
   const pesos: [string, string, string | null][] = [
-    ["Peça Fechada", `${num(r.pesoFechado).toFixed(3).replace(".", ",")} kg`, r.fotoFechado],
-    ["Produto Inatura", `${num(r.pesoInatura).toFixed(3).replace(".", ",")} kg`, r.fotoInatura],
+    ["Peça Fechada (pesar com tara)", `${num(r.pesoFechado).toFixed(3).replace(".", ",")} kg`, r.fotoFechado],
+    ["Produto Inatura (produto sem a embalagem)", `${num(r.pesoInatura).toFixed(3).replace(".", ",")} kg`, r.fotoInatura],
     ["Sebo", `${num(r.pesoSebo).toFixed(3).replace(".", ",")} kg`, r.fotoSebo],
   ];
   doc.setFont("helvetica", "bold");
@@ -138,7 +138,7 @@ export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
 
   // Resultados
   const cards: [string, string, [number, number, number]][] = [
-    ["Tempo de resfriamento", c.dias === null ? "Informe as datas" : `${c.dias} dia(s)`, [14, 130, 190]],
+    ["Tempo de Produção", c.dias === null ? "Informe as datas" : `${c.dias} dia(s)`, [14, 130, 190]],
     ["Exsudação", `${kg(c.exsudacao)}  (${pct(c.percExsudacao)})`, [40, 90, 200]],
     ["Rendimento", pct(c.rendimento), [22, 138, 90]],
     ["Sebo retirado dos cortes", kg(c.seboCortes), [220, 120, 30]],
