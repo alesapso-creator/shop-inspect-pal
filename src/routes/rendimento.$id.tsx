@@ -77,6 +77,10 @@ function RendimentoForm() {
   }
 
   const c = calcular(item);
+  const extras = item.extras ?? [];
+
+  const setExtra = (extraId: string, patch: Partial<Medicao>) =>
+    update({ extras: extras.map((x) => (x.id === extraId ? { ...x, ...patch } : x)) });
 
   const setCorte = (corteId: string, patch: Partial<Corte>) =>
     update({ cortes: item.cortes.map((x) => (x.id === corteId ? { ...x, ...patch } : x)) });
