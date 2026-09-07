@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { ClipboardList, Plus, Store, Trash2, User } from "lucide-react";
+import { Beef, ClipboardList, Plus, Store, Trash2, User } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { AREAS, formatDate, newInspection, type Inspection } from "@/lib/inspection";
