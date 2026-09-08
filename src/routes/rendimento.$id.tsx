@@ -52,7 +52,7 @@ export const Route = createFileRoute("/rendimento/$id")({
   component: RendimentoForm,
 });
 
-type FotoKey = "fotoFechado" | "fotoInatura" | "fotoSebo";
+
 
 function RendimentoForm() {
   const { id } = Route.useParams();
@@ -372,7 +372,7 @@ function BlocoPeso({
   foto: string | null;
   onPeso: (v: string) => void;
   onFoto: (v: string | null) => void;
-  fotoKey: FotoKey;
+  fotoKey: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
