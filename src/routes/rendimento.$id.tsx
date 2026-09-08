@@ -5,6 +5,7 @@ import {
   Droplets,
   FileDown,
   Flame,
+  ImagePlus,
   Plus,
   Share2,
   Timer,
@@ -374,7 +375,8 @@ function BlocoPeso({
   onFoto: (v: string | null) => void;
   fotoKey: string;
 }) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const galeriaRef = useRef<HTMLInputElement>(null);
 
   const escolher = async (files: FileList | null) => {
     const file = files?.[0];
@@ -389,7 +391,7 @@ function BlocoPeso({
   return (
     <section className="rounded-2xl border border-border bg-card p-4 shadow-sm">
       <p className="font-semibold text-card-foreground">{titulo}</p>
-      <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+      <div className="mt-3 grid gap-3">
         <div className="grid gap-1.5">
           <Label htmlFor={`${fotoKey}-peso`}>Peso (kg)</Label>
           <Input
@@ -402,14 +404,29 @@ function BlocoPeso({
             onChange={(e) => onPeso(e.target.value)}
           />
         </div>
-        <Button variant="outline" className="h-11" onClick={() => inputRef.current?.click()}>
-          <Camera className="size-5" /> {foto ? "Trocar foto" : "Adicionar foto"}
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button variant="outline" className="h-11" onClick={() => cameraRef.current?.click()}>
+            <Camera className="size-5" /> Câmera
+          </Button>
+          <Button variant="outline" className="h-11" onClick={() => galeriaRef.current?.click()}>
+            <ImagePlus className="size-5" /> Galeria
+          </Button>
+        </div>
         <input
-          ref={inputRef}
+          ref={cameraRef}
           type="file"
           accept="image/*"
           capture="environment"
+          className="hidden"
+          onChange={(e) => {
+            void escolher(e.target.files);
+            e.target.value = "";
+          }}
+        />
+        <input
+          ref={galeriaRef}
+          type="file"
+          accept="image/*"
           className="hidden"
           onChange={(e) => {
             void escolher(e.target.files);
