@@ -1,5 +1,5 @@
 import { jsPDF } from "jspdf";
-import { calcular, formatDate, kg, pct, num, type Rendimento } from "./rendimento";
+import { calcular, formatDate, kg, pct, num, type Medicao, type Rendimento } from "./rendimento";
 
 import timbre from "@/assets/timbre-friboi.jpg.asset.json";
 
@@ -40,7 +40,6 @@ function slug(value: string) {
 
 export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
-  const c = calcular(r);
   let y = M;
 
   const ensure = (needed: number) => {
