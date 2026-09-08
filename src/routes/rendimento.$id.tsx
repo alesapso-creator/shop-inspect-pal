@@ -5,6 +5,7 @@ import {
   Droplets,
   FileDown,
   Flame,
+  ImagePlus,
   Plus,
   Share2,
   Timer,
