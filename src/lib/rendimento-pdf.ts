@@ -52,18 +52,19 @@ export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
   const bg = await loadTimbre();
   if (bg) {
     const props = doc.getImageProperties(bg);
-    doc.addImage(bg, "JPEG", 0, 0, W, (props.height / props.width) * W);
+    const imgW = W * 0.72;
+    doc.addImage(bg, "JPEG", 0, 0, imgW, (props.height / props.width) * imgW);
   }
 
   doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("Relatório de Rendimento Bovino", M, bg ? 52 : 15);
+  doc.setFontSize(16);
+  doc.text("Relatório de Rendimento Bovino", M, bg ? 22 : 15);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setTextColor(110, 110, 110);
-  doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, M, bg ? 59 : 23);
-  y = bg ? 74 : 42;
+  doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, M, bg ? 28 : 23);
+  y = bg ? 42 : 42;
 
   doc.setTextColor(20, 20, 20);
   const info: [string, string][] = [
