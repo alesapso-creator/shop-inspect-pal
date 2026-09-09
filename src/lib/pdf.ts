@@ -73,13 +73,13 @@ export async function buildInspectionPdf(inspection: Inspection): Promise<jsPDF>
 
   doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("Relatório de Inspeção de Loja", M, bg ? 52 : 15);
+  doc.setFontSize(bg ? 15 : 18);
+  doc.text("Relatório de Inspeção de Loja", bg ? 90 : M, 15);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  doc.setFontSize(bg ? 8 : 10);
   doc.setTextColor(110, 110, 110);
-  doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, M, bg ? 59 : 23);
-  y = bg ? 74 : 42;
+  doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, bg ? 90 : M, bg ? 21 : 23);
+  y = bg ? 39 : 42;
 
   doc.setTextColor(20, 20, 20);
   const info: [string, string][] = [
