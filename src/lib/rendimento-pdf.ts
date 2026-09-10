@@ -121,23 +121,24 @@ export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
 
     const fotos = pesos.filter(([, , src]) => !!src) as [string, string, string][];
     if (fotos.length) {
-      const gap = 4;
+      const gap = 3;
+      const maxRowH = 28;
       const imgW = (CONTENT - gap * (fotos.length - 1)) / fotos.length;
       const heights = fotos.map(([, , src]) => {
         const props = doc.getImageProperties(src);
-        return (props.height / props.width) * imgW;
+        return Math.min(maxRowH, (props.height / props.width) * imgW);
       });
       const rowH = Math.max(...heights);
-      ensure(rowH + 8);
+      ensure(rowH + 9);
       fotos.forEach(([label, , src], i) => {
         doc.addImage(src, "JPEG", M + i * (imgW + gap), y, imgW, heights[i] ?? rowH);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
         doc.setTextColor(110, 110, 110);
-        doc.text(label, M + i * (imgW + gap), y + rowH + 4);
+        doc.text(label, M + i * (imgW + gap), y + rowH + 3);
       });
       doc.setTextColor(20, 20, 20);
-      y += rowH + 10;
+      y += rowH + 9;
     }
 
     // Resultados
