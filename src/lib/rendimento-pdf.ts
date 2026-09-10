@@ -129,7 +129,7 @@ export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
         return Math.min(maxRowH, (props.height / props.width) * imgW);
       });
       const rowH = Math.max(...heights);
-      ensure(rowH + 6);
+      ensure(rowH + 9);
       fotos.forEach(([label, , src], i) => {
         doc.addImage(src, "JPEG", M + i * (imgW + gap), y, imgW, heights[i] ?? rowH);
         doc.setFont("helvetica", "normal");
@@ -138,7 +138,7 @@ export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
         doc.text(label, M + i * (imgW + gap), y + rowH + 3);
       });
       doc.setTextColor(20, 20, 20);
-      y += rowH + 6;
+      y += rowH + 9;
     }
 
     // Resultados
