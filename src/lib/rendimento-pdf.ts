@@ -52,18 +52,18 @@ export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
   const bg = await loadTimbre();
   if (bg) {
     const props = doc.getImageProperties(bg);
-    const imgW = W * 0.22;
+    const imgW = W * 0.28;
     doc.addImage(bg, "JPEG", 0, 0, imgW, (props.height / props.width) * imgW);
   }
 
   doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(15);
-  doc.text("Relatório de Rendimento Bovino", bg ? 55 : M, bg ? 11 : 15);
+  doc.text("Relatório de Rendimento Bovino", bg ? 66 : M, bg ? 11 : 15);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(110, 110, 110);
-  doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, bg ? 55 : M, bg ? 16 : 23);
+  doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, bg ? 66 : M, bg ? 16 : 23);
   y = bg ? 24 : 42;
 
   doc.setTextColor(20, 20, 20);
@@ -123,19 +123,23 @@ export async function buildRendimentoPdf(r: Rendimento): Promise<jsPDF> {
     if (fotos.length) {
       const gap = 3;
       const maxRowH = 28;
-      const imgW = (CONTENT - gap * (fotos.length - 1)) / fotos.length;
-      const heights = fotos.map(([, , src]) => {
+      const cellW = (CONTENT - gap * (fotos.length - 1)) / fotos.length;
+      const sizes = fotos.map(([, , src]) => {
         const props = doc.getImageProperties(src);
-        return Math.min(maxRowH, (props.height / props.width) * imgW);
+        const scale = Math.min(cellW / props.width, maxRowH / props.height);
+        return { width: props.width * scale, height: props.height * scale };
       });
-      const rowH = Math.max(...heights);
+      const rowH = Math.max(...sizes.map(({ height }) => height));
       ensure(rowH + 9);
       fotos.forEach(([label, , src], i) => {
-        doc.addImage(src, "JPEG", M + i * (imgW + gap), y, imgW, heights[i] ?? rowH);
+        const cellX = M + i * (cellW + gap);
+        const size = sizes[i] ?? { width: cellW, height: rowH };
+        const imageX = cellX + (cellW - size.width) / 2;
+        doc.addImage(src, "JPEG", imageX, y, size.width, size.height);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
         doc.setTextColor(110, 110, 110);
-        doc.text(label, M + i * (imgW + gap), y + rowH + 3);
+        doc.text(label, cellX + cellW / 2, y + rowH + 3, { align: "center", maxWidth: cellW });
       });
       doc.setTextColor(20, 20, 20);
       y += rowH + 9;
