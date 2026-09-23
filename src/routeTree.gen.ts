@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcougueiroValorIndexRouteImport } from './routes/acougueiro-valor.index'
+import { Route as AcougueiroValorIdRouteImport } from './routes/acougueiro-valor.$id'
 import { Route as InspecaoIdRouteImport } from './routes/inspecao.$id'
 import { Route as InspecoesIndexRouteImport } from './routes/inspecoes.index'
 import { Route as RendimentoIndexRouteImport } from './routes/rendimento.index'
@@ -19,6 +21,16 @@ import { Route as AreaIdAreaIdRouteImport } from './routes/area.$id.$areaId'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcougueiroValorIndexRoute = AcougueiroValorIndexRouteImport.update({
+  id: '/acougueiro-valor/',
+  path: '/acougueiro-valor/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcougueiroValorIdRoute = AcougueiroValorIdRouteImport.update({
+  id: '/acougueiro-valor/$id',
+  path: '/acougueiro-valor/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InspecaoIdRoute = InspecaoIdRouteImport.update({
@@ -49,16 +61,20 @@ const AreaIdAreaIdRoute = AreaIdAreaIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acougueiro-valor/$id': typeof AcougueiroValorIdRoute
   '/inspecao/$id': typeof InspecaoIdRoute
   '/rendimento/$id': typeof RendimentoIdRoute
+  '/acougueiro-valor/': typeof AcougueiroValorIndexRoute
   '/inspecoes/': typeof InspecoesIndexRoute
   '/rendimento/': typeof RendimentoIndexRoute
   '/area/$id/$areaId': typeof AreaIdAreaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acougueiro-valor/$id': typeof AcougueiroValorIdRoute
   '/inspecao/$id': typeof InspecaoIdRoute
   '/rendimento/$id': typeof RendimentoIdRoute
+  '/acougueiro-valor': typeof AcougueiroValorIndexRoute
   '/inspecoes': typeof InspecoesIndexRoute
   '/rendimento': typeof RendimentoIndexRoute
   '/area/$id/$areaId': typeof AreaIdAreaIdRoute
@@ -66,8 +82,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/acougueiro-valor/$id': typeof AcougueiroValorIdRoute
   '/inspecao/$id': typeof InspecaoIdRoute
   '/rendimento/$id': typeof RendimentoIdRoute
+  '/acougueiro-valor/': typeof AcougueiroValorIndexRoute
   '/inspecoes/': typeof InspecoesIndexRoute
   '/rendimento/': typeof RendimentoIndexRoute
   '/area/$id/$areaId': typeof AreaIdAreaIdRoute
@@ -76,24 +94,30 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/acougueiro-valor/$id'
     | '/inspecao/$id'
     | '/rendimento/$id'
+    | '/acougueiro-valor/'
     | '/inspecoes/'
     | '/rendimento/'
     | '/area/$id/$areaId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/acougueiro-valor/$id'
     | '/inspecao/$id'
     | '/rendimento/$id'
+    | '/acougueiro-valor'
     | '/inspecoes'
     | '/rendimento'
     | '/area/$id/$areaId'
   id:
     | '__root__'
     | '/'
+    | '/acougueiro-valor/$id'
     | '/inspecao/$id'
     | '/rendimento/$id'
+    | '/acougueiro-valor/'
     | '/inspecoes/'
     | '/rendimento/'
     | '/area/$id/$areaId'
@@ -101,8 +125,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcougueiroValorIdRoute: typeof AcougueiroValorIdRoute
   InspecaoIdRoute: typeof InspecaoIdRoute
   RendimentoIdRoute: typeof RendimentoIdRoute
+  AcougueiroValorIndexRoute: typeof AcougueiroValorIndexRoute
   InspecoesIndexRoute: typeof InspecoesIndexRoute
   RendimentoIndexRoute: typeof RendimentoIndexRoute
   AreaIdAreaIdRoute: typeof AreaIdAreaIdRoute
@@ -115,6 +141,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/acougueiro-valor/': {
+      id: '/acougueiro-valor/'
+      path: '/acougueiro-valor'
+      fullPath: '/acougueiro-valor/'
+      preLoaderRoute: typeof AcougueiroValorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/acougueiro-valor/$id': {
+      id: '/acougueiro-valor/$id'
+      path: '/acougueiro-valor/$id'
+      fullPath: '/acougueiro-valor/$id'
+      preLoaderRoute: typeof AcougueiroValorIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inspecao/$id': {
@@ -157,8 +197,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcougueiroValorIdRoute: AcougueiroValorIdRoute,
   InspecaoIdRoute: InspecaoIdRoute,
   RendimentoIdRoute: RendimentoIdRoute,
+  AcougueiroValorIndexRoute: AcougueiroValorIndexRoute,
   InspecoesIndexRoute: InspecoesIndexRoute,
   RendimentoIndexRoute: RendimentoIndexRoute,
   AreaIdAreaIdRoute: AreaIdAreaIdRoute,
