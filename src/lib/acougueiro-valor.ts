@@ -1,0 +1,80 @@
+import { z } from "zod";
+import type { NivelId } from "./inspection";
+
+export const DESTAQUES_ATENDIMENTO = [
+  "Gancheira",
+  "Bandeja",
+  "Atendimento",
+  "Higienização",
+] as const;
+
+export const DESTAQUES_AUTOSSERVICO = [
+  "Cortes",
+  "Padronização",
+  "Melhor aproveitamento das peças",
+  "Organização",
+  "Exposição dos produtos",
+] as const;
+
+export const COMENTARIOS_SUGERIDOS = [
+  "Demonstra excelência técnica, cuidado com os produtos e compromisso com o cliente.",
+  "É referência para a equipe pela organização, qualidade do trabalho e atenção aos detalhes.",
+  "Seu trabalho contribui para uma apresentação impecável e para o melhor aproveitamento dos produtos.",
+] as const;
+
+export type AcougueiroValor = {
+  id: string;
+  rede: string;
+  loja: string;
+  colaborador: string;
+  nivel: NivelId | null;
+  data: string;
+  tecnico: string;
+  fotoPerfil: string | null;
+  destaquesAtendimento: string[];
+  destaquesAutosservico: string[];
+  comentario: string;
+  fotosTrabalho: string[];
+  createdAt: number;
+  updatedAt: number;
+};
+
+export const acougueiroValorSchema = z.object({
+  rede: z.string().trim().min(1, "Informe a rede.").max(100),
+  loja: z.string().trim().min(1, "Informe a loja.").max(100),
+  colaborador: z.string().trim().min(1, "Informe o nome do colaborador.").max(120),
+  nivel: z.enum(["iniciante", "bronze", "prata", "ouro"], {
+    required_error: "Escolha o nível do colaborador.",
+  }),
+  data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Informe a data."),
+  tecnico: z.string().trim().min(1, "Informe o técnico.").max(120),
+  fotoPerfil: z.string().min(1, "Adicione a foto de perfil do colaborador."),
+  destaques: z.array(z.string()).min(1, "Selecione pelo menos um destaque."),
+  comentario: z.string().trim().min(1, "Adicione um comentário de reconhecimento.").max(1200),
+});
+
+export function newAcougueiroValor(): AcougueiroValor {
+  const now = Date.now();
+  return {
+    id: crypto.randomUUID(),
+    rede: "",
+    loja: "",
+    colaborador: "",
+    nivel: null,
+    data: new Date().toISOString().slice(0, 10),
+    tecnico: "",
+    fotoPerfil: null,
+    destaquesAtendimento: [],
+    destaquesAutosservico: [],
+    comentario: "",
+    fotosTrabalho: [],
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+export function formatValorDate(iso: string) {
+  if (!iso) return "";
+  const [year, month, day] = iso.split("-");
+  return `${day}/${month}/${year}`;
+}

@@ -1,20 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Beef, ClipboardCheck } from "lucide-react";
+import { ArrowRight, Award, Beef, ClipboardCheck } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Inspeção de Loja — Registro e Relatório em PDF" },
+      { title: "Gestão de Loja — Relatórios e Reconhecimentos" },
       {
         name: "description",
         content:
-          "Registre inspeções de loja por área, marque a conformidade, anexe fotos e gere o relatório em PDF direto do celular.",
+          "Acesse inspeções, rendimentos bovinos e reconhecimentos Açougueiro de Valor em um só lugar.",
       },
-      { property: "og:title", content: "Inspeção de Loja — Registro e Relatório em PDF" },
+      { property: "og:title", content: "Gestão de Loja — Relatórios e Reconhecimentos" },
       {
         property: "og:description",
-        content: "Acesse relatórios de inspeção e rendimento bovino em um só lugar.",
+        content: "Acesse relatórios de inspeção, rendimento bovino e reconhecimentos de colaboradores.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <AppShell title="Gestão de Loja" subtitle="Inspeções e rendimentos">
+    <AppShell title="Gestão de Loja" subtitle="Relatórios e reconhecimentos">
       <section className="py-4">
         <p className="text-sm font-medium text-primary">Bem-vindo</p>
         <h2 className="mt-1 text-2xl font-bold text-foreground">O que deseja consultar?</h2>
@@ -66,6 +66,22 @@ function Home() {
             <ArrowRight className="mb-1 size-5 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
           </span>
       </Link>
+
+        <Link
+          to="/acougueiro-valor"
+          className="group flex min-h-44 flex-col justify-between rounded-lg border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:bg-accent sm:col-span-2"
+        >
+          <span className="flex size-12 items-center justify-center rounded-lg bg-warn text-foreground">
+            <Award className="size-6" />
+          </span>
+          <span className="mt-8 flex items-end justify-between gap-3">
+            <span>
+              <span className="block text-lg font-bold text-card-foreground">Açougueiro de Valor</span>
+              <span className="mt-1 block text-sm text-muted-foreground">Reconheça colaboradores e valorize seus destaques</span>
+            </span>
+            <ArrowRight className="mb-1 size-5 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+          </span>
+        </Link>
       </div>
     </AppShell>
   );
