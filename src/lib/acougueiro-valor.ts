@@ -16,6 +16,13 @@ export const DESTAQUES_AUTOSSERVICO = [
   "Exposição dos produtos",
 ] as const;
 
+export const DESTAQUES_CAMARA_FRIA = [
+  "Higienização",
+  "Organização",
+  "Conferência PVPS",
+  "Identificação de Data",
+] as const;
+
 export const COMENTARIOS_SUGERIDOS = [
   "Demonstra excelência técnica, cuidado com os produtos e compromisso com o cliente.",
   "É referência para a equipe pela organização, qualidade do trabalho e atenção aos detalhes.",
@@ -32,7 +39,11 @@ export type AcougueiroValor = {
   tecnico: string;
   fotoPerfil: string | null;
   destaquesAtendimento: string[];
+  habilidadeAtendimento: string;
   destaquesAutosservico: string[];
+  habilidadeAutosservico: string;
+  destaquesCamaraFria: string[];
+  habilidadeCamaraFria: string;
   comentario: string;
   fotosTrabalho: string[];
   createdAt: number;
@@ -49,7 +60,10 @@ export const acougueiroValorSchema = z.object({
   data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Informe a data."),
   tecnico: z.string().trim().min(1, "Informe o técnico.").max(120),
   fotoPerfil: z.string().min(1, "Adicione a foto de perfil do colaborador."),
-  destaques: z.array(z.string()).min(1, "Selecione pelo menos um destaque."),
+  destaques: z.array(z.string()).min(1, "Selecione ou escreva pelo menos um destaque."),
+  habilidadeAtendimento: z.string().trim().max(200, "A habilidade do Balcão de Atendimento deve ter até 200 caracteres."),
+  habilidadeAutosservico: z.string().trim().max(200, "A habilidade do Balcão de Autosserviço deve ter até 200 caracteres."),
+  habilidadeCamaraFria: z.string().trim().max(200, "A habilidade da Câmara fria deve ter até 200 caracteres."),
   comentario: z.string().trim().min(1, "Adicione um comentário de reconhecimento.").max(1200),
 });
 
@@ -65,7 +79,11 @@ export function newAcougueiroValor(): AcougueiroValor {
     tecnico: "",
     fotoPerfil: null,
     destaquesAtendimento: [],
+    habilidadeAtendimento: "",
     destaquesAutosservico: [],
+    habilidadeAutosservico: "",
+    destaquesCamaraFria: [],
+    habilidadeCamaraFria: "",
     comentario: "",
     fotosTrabalho: [],
     createdAt: now,
