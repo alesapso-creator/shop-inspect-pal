@@ -6,3 +6,5 @@
 - [x] Criar cadastro com colaborador, nível, data, técnico, destaques e comentários
 - [x] Permitir foto de perfil e várias fotos do trabalho, por câmera ou galeria
 - [x] Gerar e compartilhar PDF de reconhecimento no padrão Friboi+
+- [ ] Permitir habilidades manuais nos balcões do Açougueiro de Valor
+- [ ] Adicionar Câmara fria com habilidades e texto manual ao formulário e PDF
