@@ -63,6 +63,21 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.text("Reconhecimento profissional Friboi+", bg ? 66 : M, bg ? 18 : 24);
   y = bg ? 31 : 36;
 
+  doc.setFillColor(237, 246, 241);
+  const thankYouLines = doc.splitTextToSize(AGRADECIMENTO, CONTENT - 14) as string[];
+  const thankYouH = thankYouLines.length * 5 + 14;
+  ensure(thankYouH);
+  doc.roundedRect(M, y, CONTENT, thankYouH, 2, 2, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(22, 112, 75);
+  doc.text("UM RECONHECIMENTO FRIBOI+", M + 7, y + 7);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(35, 35, 35);
+  doc.text(thankYouLines, M + 7, y + 13);
+  y += thankYouH + 9;
+
   if (item.fotoPerfil) {
     const boxW = 52;
     const boxH = 66;
@@ -94,21 +109,6 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
     });
     y += boxH + 9;
   }
-
-  doc.setFillColor(237, 246, 241);
-  const thankYouLines = doc.splitTextToSize(AGRADECIMENTO, CONTENT - 14) as string[];
-  const thankYouH = thankYouLines.length * 5 + 14;
-  ensure(thankYouH);
-  doc.roundedRect(M, y, CONTENT, thankYouH, 2, 2, "F");
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
-  doc.setTextColor(22, 112, 75);
-  doc.text("UM RECONHECIMENTO FRIBOI+", M + 7, y + 7);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9.5);
-  doc.setTextColor(35, 35, 35);
-  doc.text(thankYouLines, M + 7, y + 13);
-  y += thankYouH + 9;
 
   const renderHighlights = (title: string, values: string[]) => {
     if (!values.length) return;
