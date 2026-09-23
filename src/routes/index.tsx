@@ -5,16 +5,16 @@ import { AppShell } from "@/components/AppShell";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Inspeção de Loja — Registro e Relatório em PDF" },
+      { title: "Gestão de Loja — Relatórios e Reconhecimentos" },
       {
         name: "description",
         content:
-          "Registre inspeções de loja por área, marque a conformidade, anexe fotos e gere o relatório em PDF direto do celular.",
+          "Acesse inspeções, rendimentos bovinos e reconhecimentos Açougueiro de Valor em um só lugar.",
       },
-      { property: "og:title", content: "Inspeção de Loja — Registro e Relatório em PDF" },
+      { property: "og:title", content: "Gestão de Loja — Relatórios e Reconhecimentos" },
       {
         property: "og:description",
-        content: "Acesse relatórios de inspeção e rendimento bovino em um só lugar.",
+        content: "Acesse relatórios de inspeção, rendimento bovino e reconhecimentos de colaboradores.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
