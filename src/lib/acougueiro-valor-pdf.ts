@@ -112,25 +112,29 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
 
   const renderHighlights = (title: string, values: string[]) => {
     if (!values.length) return;
-    ensure(15 + values.length * 7);
+    ensure(15);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(13);
     doc.setTextColor(20, 20, 20);
     doc.text(title, M, y);
     y += 7;
     values.forEach((value) => {
+      const lines = doc.splitTextToSize(value, CONTENT - 9) as string[];
+      const lineH = Math.max(7, lines.length * 4.5 + 2);
+      ensure(lineH);
       doc.setFillColor(22, 138, 90);
       doc.circle(M + 2, y - 1.5, 1.6, "F");
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.text(value, M + 7, y);
-      y += 7;
+      doc.text(lines, M + 7, y);
+      y += lineH;
     });
     y += 3;
   };
 
-  renderHighlights("Destaques — Balcão de Atendimento", item.destaquesAtendimento);
-  renderHighlights("Destaques — Balcão de Autosserviço", item.destaquesAutosservico);
+  renderHighlights("Destaques — Balcão de Atendimento", [...item.destaquesAtendimento, ...(item.habilidadeAtendimento?.trim() ? [item.habilidadeAtendimento.trim()] : [])]);
+  renderHighlights("Destaques — Balcão de Autosserviço", [...item.destaquesAutosservico, ...(item.habilidadeAutosservico?.trim() ? [item.habilidadeAutosservico.trim()] : [])]);
+  renderHighlights("Destaques — Câmara fria", [...(item.destaquesCamaraFria ?? []), ...(item.habilidadeCamaraFria?.trim() ? [item.habilidadeCamaraFria.trim()] : [])]);
 
   ensure(30);
   doc.setFont("helvetica", "bold");
