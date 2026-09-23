@@ -1,10 +1,6 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
-import { Beef, ClipboardList, Plus, Store, Trash2, User } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Beef, ClipboardCheck } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { Button } from "@/components/ui/button";
-import { AREAS, formatDate, newInspection, type Inspection } from "@/lib/inspection";
-import { deleteInspection, listInspections, saveInspection } from "@/lib/inspection-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,108 +14,58 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Inspeção de Loja — Registro e Relatório em PDF" },
       {
         property: "og:description",
-        content: "Checklist de áreas, fotos e PDF gerado no aparelho, sem internet.",
+        content: "Acesse relatórios de inspeção e rendimento bovino em um só lugar.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Home,
 });
 
 function Home() {
-  const navigate = useNavigate();
-  const [items, setItems] = useState<Inspection[] | null>(null);
-
-  const load = useCallback(async () => {
-    setItems(await listInspections());
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
-
-  const criar = async () => {
-    const inspecao = newInspection();
-    await saveInspection(inspecao);
-    void navigate({ to: "/inspecao/$id", params: { id: inspecao.id } });
-  };
-
-  const remover = async (id: string) => {
-    await deleteInspection(id);
-    void load();
-  };
-
   return (
-    <AppShell title="Inspeções de Loja" subtitle="Salvas neste aparelho">
+    <AppShell title="Gestão de Loja" subtitle="Inspeções e rendimentos">
+      <section className="py-4">
+        <p className="text-sm font-medium text-primary">Bem-vindo</p>
+        <h2 className="mt-1 text-2xl font-bold text-foreground">O que deseja consultar?</h2>
+        <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+          Escolha uma opção para abrir os relatórios já realizados ou iniciar um novo registro.
+        </p>
+      </section>
+
+      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+        <Link
+          to="/inspecoes"
+          className="group flex min-h-44 flex-col justify-between rounded-lg border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:bg-accent"
+        >
+          <span className="flex size-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <ClipboardCheck className="size-6" />
+          </span>
+          <span className="mt-8 flex items-end justify-between gap-3">
+            <span>
+              <span className="block text-lg font-bold text-card-foreground">Inspeção</span>
+              <span className="mt-1 block text-sm text-muted-foreground">Histórico de visitas e conformidades</span>
+            </span>
+            <ArrowRight className="mb-1 size-5 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+          </span>
+        </Link>
+
       <Link
         to="/rendimento"
-        className="mb-4 flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition-colors active:bg-accent"
+          className="group flex min-h-44 flex-col justify-between rounded-lg border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/40 hover:shadow-md active:bg-accent"
       >
-        <Beef className="size-8 text-primary" />
-        <div className="min-w-0">
-          <p className="font-semibold text-card-foreground">Rendimento Bovino</p>
-          <p className="text-sm text-muted-foreground">
-            Pesos, exsudação, perda e relatório em PDF
-          </p>
-        </div>
+          <span className="flex size-12 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
+            <Beef className="size-6" />
+          </span>
+          <span className="mt-8 flex items-end justify-between gap-3">
+            <span>
+              <span className="block text-lg font-bold text-card-foreground">Rendimento</span>
+              <span className="mt-1 block text-sm text-muted-foreground">Histórico de pesos, perdas e resultados</span>
+            </span>
+            <ArrowRight className="mb-1 size-5 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+          </span>
       </Link>
-      {items === null ? (
-        <p className="py-10 text-center text-sm text-muted-foreground">Carregando…</p>
-
-      ) : items.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border py-14 text-center">
-          <ClipboardList className="mx-auto size-10 text-muted-foreground" />
-          <p className="mt-3 font-medium">Nenhuma inspeção ainda</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Toque em “Nova inspeção” para começar.
-          </p>
-        </div>
-      ) : (
-        <ul className="space-y-3">
-          {items.map((item) => {
-            const preenchidas = AREAS.filter((a) => item.areas[a.id]).length;
-            return (
-              <li
-                key={item.id}
-                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm"
-              >
-                <Link
-                  to="/inspecao/$id"
-                  params={{ id: item.id }}
-                  className="min-w-0 flex-1"
-                >
-                  <p className="truncate font-semibold text-card-foreground">
-                    {item.loja || "Loja sem nome"}
-                  </p>
-                  <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm text-muted-foreground">
-                    <Store className="size-3.5" />
-                    {item.rede || "Rede não informada"}
-                  </p>
-                  <p className="mt-0.5 flex items-center gap-1.5 truncate text-xs text-muted-foreground">
-                    <User className="size-3.5" />
-                    {item.tecnico || "Sem técnico"} · {formatDate(item.data)} · {preenchidas}/
-                    {AREAS.length} áreas
-                  </p>
-                </Link>
-                <button
-                  type="button"
-                  aria-label="Excluir inspeção"
-                  onClick={() => void remover(item.id)}
-                  className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-
-      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 p-4 backdrop-blur">
-        <div className="mx-auto max-w-3xl">
-          <Button size="lg" className="h-13 w-full text-base" onClick={() => void criar()}>
-            <Plus className="size-5" /> Nova inspeção
-          </Button>
-        </div>
       </div>
     </AppShell>
   );
