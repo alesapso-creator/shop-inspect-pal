@@ -7,6 +7,7 @@ const M = 15;
 const W = 210;
 const H = 297;
 const CONTENT = W - M * 2;
+const AGRADECIMENTO = "Nós, do Friboi+, temos orgulho de reconhecer este momento de profissionalismo e dedicação. Cada conquista reflete o compromisso com o aprendizado, a excelência e a valorização de quem faz a diferença todos os dias.";
 let timbreCache: string | null = null;
 
 async function loadTimbre(): Promise<string | null> {
@@ -82,17 +83,32 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
     ];
     info.forEach(([label, value]) => {
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(9);
+      doc.setFontSize(7.5);
       doc.setTextColor(90, 90, 90);
       doc.text(label.toUpperCase(), infoX, infoY);
-      infoY += 4.5;
-      doc.setFontSize(11);
+      infoY += 3.5;
+      doc.setFontSize(9);
       doc.setTextColor(20, 20, 20);
       doc.text(doc.splitTextToSize(value || "-", W - M - infoX) as string[], infoX, infoY);
-      infoY += 7;
+      infoY += 5.5;
     });
     y += boxH + 9;
   }
+
+  doc.setFillColor(237, 246, 241);
+  const thankYouLines = doc.splitTextToSize(AGRADECIMENTO, CONTENT - 14) as string[];
+  const thankYouH = thankYouLines.length * 5 + 14;
+  ensure(thankYouH);
+  doc.roundedRect(M, y, CONTENT, thankYouH, 2, 2, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(22, 112, 75);
+  doc.text("UM RECONHECIMENTO FRIBOI+", M + 7, y + 7);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(35, 35, 35);
+  doc.text(thankYouLines, M + 7, y + 13);
+  y += thankYouH + 9;
 
   const renderHighlights = (title: string, values: string[]) => {
     if (!values.length) return;
