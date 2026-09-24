@@ -80,22 +80,6 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.text(thankYouLines, M + thankYouInset, y + 14);
   y += thankYouH + 5;
 
-  const sealW = 84;
-  const sealH = 18;
-  const sealX = M + (CONTENT - sealW) / 2;
-  doc.setDrawColor(197, 151, 35);
-  doc.setFillColor(255, 249, 225);
-  doc.setLineWidth(0.7);
-  doc.roundedRect(sealX, y, sealW, sealH, 3, 3, "FD");
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9.5);
-  doc.setTextColor(126, 88, 8);
-  doc.text("PROFISSIONAL DESTAQUE FRIBOI+", W / 2, y + 7, { align: "center" });
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.text(`${item.nivel ? nivelLabel(item.nivel) : "Nível não informado"}  •  ${formatValorDate(item.data)}`, W / 2, y + 13, { align: "center" });
-  y += sealH + 6;
-
   const infoColumns: [string, string][][] = [
     [["Rede", item.rede], ["Loja", item.loja], ["Técnico", item.tecnico]],
     [["Colaborador", item.colaborador], ["Data", formatValorDate(item.data)], ["Nível", item.nivel ? nivelLabel(item.nivel) : "-"]],
