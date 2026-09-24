@@ -64,18 +64,19 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   y = bg ? 27 : 31;
 
   doc.setFillColor(237, 246, 241);
-  const thankYouLines = doc.splitTextToSize(AGRADECIMENTO, CONTENT - 14) as string[];
-  const thankYouH = thankYouLines.length * 5 + 14;
+  const thankYouInset = 9;
+  const thankYouLines = doc.splitTextToSize(AGRADECIMENTO, CONTENT - thankYouInset * 2) as string[];
+  const thankYouH = thankYouLines.length * 5 + 17;
   ensure(thankYouH);
   doc.roundedRect(M, y, CONTENT, thankYouH, 2, 2, "F");
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.setTextColor(22, 112, 75);
-  doc.text("UM RECONHECIMENTO FRIBOI+", M + 7, y + 7);
+  doc.text("UM RECONHECIMENTO FRIBOI+", M + thankYouInset, y + 7);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(35, 35, 35);
-  doc.text(thankYouLines, M + 7, y + 13);
+  doc.text(thankYouLines, M + thankYouInset, y + 14);
   y += thankYouH + 5;
 
   const infoColumns: [string, string][][] = [
