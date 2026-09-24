@@ -61,7 +61,7 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.setFontSize(9);
   doc.setTextColor(105, 105, 105);
   doc.text("Reconhecimento profissional Friboi+", bg ? 66 : M, bg ? 18 : 24);
-  y = bg ? 31 : 36;
+  y = bg ? 27 : 31;
 
   doc.setFillColor(237, 246, 241);
   const thankYouLines = doc.splitTextToSize(AGRADECIMENTO, CONTENT - 14) as string[];
@@ -76,65 +76,95 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.setFontSize(9.5);
   doc.setTextColor(35, 35, 35);
   doc.text(thankYouLines, M + 7, y + 13);
-  y += thankYouH + 9;
+  y += thankYouH + 5;
 
-  if (item.fotoPerfil) {
-    const boxW = 52;
-    const boxH = 66;
-    const size = fitImage(doc, item.fotoPerfil, boxW, boxH);
-    doc.setFillColor(244, 246, 247);
-    doc.roundedRect(M, y, boxW, boxH, 2, 2, "F");
-    doc.addImage(item.fotoPerfil, "JPEG", M + (boxW - size.width) / 2, y + (boxH - size.height) / 2, size.width, size.height);
-
-    const infoX = M + boxW + 9;
-    let infoY = y + 5;
-    const info: [string, string][] = [
-      ["Colaborador", item.colaborador],
-      ["Nível", item.nivel ? nivelLabel(item.nivel) : "-"],
-      ["Rede", item.rede],
-      ["Loja", item.loja],
-      ["Data", formatValorDate(item.data)],
-      ["Técnico", item.tecnico],
-    ];
-    info.forEach(([label, value]) => {
+  const infoColumns: [string, string][][] = [
+    [["Rede", item.rede], ["Loja", item.loja], ["Técnico", item.tecnico]],
+    [["Colaborador", item.colaborador], ["Data", formatValorDate(item.data)], ["Nível", item.nivel ? nivelLabel(item.nivel) : "-"]],
+  ];
+  const columnGap = 8;
+  const columnW = (CONTENT - columnGap) / 2;
+  const infoStartY = y;
+  infoColumns.forEach((column, columnIndex) => {
+    const infoX = M + columnIndex * (columnW + columnGap);
+    let infoY = infoStartY;
+    column.forEach(([label, value]) => {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7.5);
       doc.setTextColor(90, 90, 90);
       doc.text(label.toUpperCase(), infoX, infoY);
       infoY += 3.5;
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(20, 20, 20);
-      doc.text(doc.splitTextToSize(value || "-", W - M - infoX) as string[], infoX, infoY);
-      infoY += 5.5;
+      const valueLines = doc.splitTextToSize(value || "-", columnW) as string[];
+      doc.text(valueLines, infoX, infoY);
+      infoY += Math.max(7, valueLines.length * 4 + 3);
     });
-    y += boxH + 9;
-  }
+  });
+  y += 33;
 
-  const renderHighlights = (title: string, values: string[]) => {
+  const renderHighlights = (title: string, values: string[], description: string, x: number, width: number, startY: number) => {
     if (!values.length) return;
-    ensure(15);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(13);
+    doc.setFontSize(9);
     doc.setTextColor(20, 20, 20);
-    doc.text(title, M, y);
-    y += 7;
+    doc.text(title, x, startY);
+    let highlightY = startY + 5;
     values.forEach((value) => {
-      const lines = doc.splitTextToSize(value, CONTENT - 9) as string[];
-      const lineH = Math.max(7, lines.length * 4.5 + 2);
-      ensure(lineH);
+      const lines = doc.splitTextToSize(value, width - 7) as string[];
       doc.setFillColor(22, 138, 90);
-      doc.circle(M + 2, y - 1.5, 1.6, "F");
+      doc.circle(x + 1.3, highlightY - 1.2, 1.1, "F");
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      doc.text(lines, M + 7, y);
-      y += lineH;
+      doc.setFontSize(8.5);
+      doc.setTextColor(35, 35, 35);
+      doc.text(lines, x + 5, highlightY);
+      highlightY += Math.max(5, lines.length * 3.8 + 1);
     });
-    y += 3;
+    if (description.trim()) {
+      const descriptionLines = doc.splitTextToSize(description.trim(), width - 5) as string[];
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(7.5);
+      doc.setTextColor(90, 90, 90);
+      doc.text("DESTAQUE", x, highlightY);
+      highlightY += 3.5;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(35, 35, 35);
+      doc.text(descriptionLines, x, highlightY);
+      highlightY += descriptionLines.length * 3.8 + 2;
+    }
+    return highlightY;
   };
 
-  renderHighlights("Destaques — Balcão de Atendimento", [...item.destaquesAtendimento, ...(item.habilidadeAtendimento?.trim() ? [item.habilidadeAtendimento.trim()] : [])]);
-  renderHighlights("Destaques — Balcão de Autosserviço", [...item.destaquesAutosservico, ...(item.habilidadeAutosservico?.trim() ? [item.habilidadeAutosservico.trim()] : [])]);
-  renderHighlights("Destaques — Câmara fria", [...(item.destaquesCamaraFria ?? []), ...(item.habilidadeCamaraFria?.trim() ? [item.habilidadeCamaraFria.trim()] : [])]);
+  const selectedValues = (values: string[], other?: string) => [
+    ...values.filter((value) => value !== "Outros"),
+    ...(values.includes("Outros") && other?.trim() ? [other.trim()] : []),
+  ];
+  const photoW = 52;
+  const photoH = 66;
+  const highlightsX = M + photoW + 9;
+  const highlightsW = W - M - highlightsX;
+  const allGroups = [
+    { title: "Balcão de Atendimento", values: selectedValues(item.destaquesAtendimento, item.outrosAtendimento), description: item.habilidadeAtendimento ?? "" },
+    { title: "Balcão de Autosserviço", values: selectedValues(item.destaquesAutosservico, item.outrosAutosservico), description: item.habilidadeAutosservico ?? "" },
+    { title: "Câmara fria", values: selectedValues(item.destaquesCamaraFria ?? [], item.outrosCamaraFria), description: item.habilidadeCamaraFria ?? "" },
+  ].filter((group) => group.values.length || group.description.trim());
+  const estimatedHighlightsH = allGroups.reduce((height, group) => height + 8 + group.values.length * 5 + Math.ceil(group.description.length / 55) * 4, 0);
+  ensure(Math.max(photoH, estimatedHighlightsH) + 6);
+  const profileStartY = y;
+  if (item.fotoPerfil) {
+    const size = fitImage(doc, item.fotoPerfil, photoW, photoH);
+    doc.setFillColor(244, 246, 247);
+    doc.roundedRect(M, profileStartY, photoW, photoH, 2, 2, "F");
+    doc.addImage(item.fotoPerfil, "JPEG", M + (photoW - size.width) / 2, profileStartY + (photoH - size.height) / 2, size.width, size.height);
+  }
+  let highlightsY = profileStartY;
+  allGroups.forEach((group) => {
+    const nextY = renderHighlights(group.title, group.values, group.description, highlightsX, highlightsW, highlightsY);
+    if (nextY) highlightsY = nextY + 2;
+  });
+  y = Math.max(profileStartY + photoH, highlightsY) + 8;
 
   ensure(30);
   doc.setFont("helvetica", "bold");

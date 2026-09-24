@@ -6,6 +6,7 @@ export const DESTAQUES_ATENDIMENTO = [
   "Bandeja",
   "Atendimento",
   "Higienização",
+  "Outros",
 ] as const;
 
 export const DESTAQUES_AUTOSSERVICO = [
@@ -14,6 +15,7 @@ export const DESTAQUES_AUTOSSERVICO = [
   "Melhor aproveitamento das peças",
   "Organização",
   "Exposição dos produtos",
+  "Outros",
 ] as const;
 
 export const DESTAQUES_CAMARA_FRIA = [
@@ -21,6 +23,7 @@ export const DESTAQUES_CAMARA_FRIA = [
   "Organização",
   "Conferência PVPS",
   "Identificação de Data",
+  "Outros",
 ] as const;
 
 export const COMENTARIOS_SUGERIDOS = [
@@ -39,10 +42,13 @@ export type AcougueiroValor = {
   tecnico: string;
   fotoPerfil: string | null;
   destaquesAtendimento: string[];
+  outrosAtendimento: string;
   habilidadeAtendimento: string;
   destaquesAutosservico: string[];
+  outrosAutosservico: string;
   habilidadeAutosservico: string;
   destaquesCamaraFria: string[];
+  outrosCamaraFria: string;
   habilidadeCamaraFria: string;
   comentario: string;
   fotosTrabalho: string[];
@@ -62,8 +68,11 @@ export const acougueiroValorSchema = z.object({
   fotoPerfil: z.string().min(1, "Adicione a foto de perfil do colaborador."),
   destaques: z.array(z.string()).min(1, "Selecione ou escreva pelo menos um destaque."),
   habilidadeAtendimento: z.string().trim().max(200, "A habilidade do Balcão de Atendimento deve ter até 200 caracteres."),
+  outrosAtendimento: z.string().trim().max(80, "O campo Outros do Balcão de Atendimento deve ter até 80 caracteres."),
   habilidadeAutosservico: z.string().trim().max(200, "A habilidade do Balcão de Autosserviço deve ter até 200 caracteres."),
+  outrosAutosservico: z.string().trim().max(80, "O campo Outros do Balcão de Autosserviço deve ter até 80 caracteres."),
   habilidadeCamaraFria: z.string().trim().max(200, "A habilidade da Câmara fria deve ter até 200 caracteres."),
+  outrosCamaraFria: z.string().trim().max(80, "O campo Outros da Câmara fria deve ter até 80 caracteres."),
   comentario: z.string().trim().min(1, "Adicione um comentário de reconhecimento.").max(1200),
 });
 
@@ -79,10 +88,13 @@ export function newAcougueiroValor(): AcougueiroValor {
     tecnico: "",
     fotoPerfil: null,
     destaquesAtendimento: [],
+    outrosAtendimento: "",
     habilidadeAtendimento: "",
     destaquesAutosservico: [],
+    outrosAutosservico: "",
     habilidadeAutosservico: "",
     destaquesCamaraFria: [],
+    outrosCamaraFria: "",
     habilidadeCamaraFria: "",
     comentario: "",
     fotosTrabalho: [],

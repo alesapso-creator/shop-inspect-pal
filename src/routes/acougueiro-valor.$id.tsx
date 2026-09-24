@@ -33,7 +33,7 @@ function AcougueiroValorForm() {
   const profileGallery = useRef<HTMLInputElement>(null);
   const workCamera = useRef<HTMLInputElement>(null);
   const workGallery = useRef<HTMLInputElement>(null);
-  useEffect(() => { void getAcougueiroValor(id).then((found) => { if (found) setItem({ ...found, habilidadeAtendimento: found.habilidadeAtendimento ?? "", habilidadeAutosservico: found.habilidadeAutosservico ?? "", destaquesCamaraFria: found.destaquesCamaraFria ?? [], habilidadeCamaraFria: found.habilidadeCamaraFria ?? "" }); }); }, [id]);
+  useEffect(() => { void getAcougueiroValor(id).then((found) => { if (found) setItem({ ...found, outrosAtendimento: found.outrosAtendimento ?? "", habilidadeAtendimento: found.habilidadeAtendimento ?? "", outrosAutosservico: found.outrosAutosservico ?? "", habilidadeAutosservico: found.habilidadeAutosservico ?? "", destaquesCamaraFria: found.destaquesCamaraFria ?? [], outrosCamaraFria: found.outrosCamaraFria ?? "", habilidadeCamaraFria: found.habilidadeCamaraFria ?? "" }); }); }, [id]);
   const update = useCallback((patch: Partial<AcougueiroValor>) => {
     setItem((previous) => {
       if (!previous) return previous;
@@ -56,8 +56,11 @@ function AcougueiroValorForm() {
         ...item.destaquesAtendimento,
         ...item.destaquesAutosservico,
         ...item.destaquesCamaraFria,
+        item.outrosAtendimento.trim(),
         item.habilidadeAtendimento.trim(),
+        item.outrosAutosservico.trim(),
         item.habilidadeAutosservico.trim(),
+        item.outrosCamaraFria.trim(),
         item.habilidadeCamaraFria.trim(),
       ].filter(Boolean),
     });
@@ -109,11 +112,14 @@ function AcougueiroValorForm() {
 
       <SectionTitle>Destaques do colaborador</SectionTitle>
       <ChoiceGroup title="Balcão de Atendimento" values={DESTAQUES_ATENDIMENTO} selected={item.destaquesAtendimento} onToggle={(value) => toggle("destaquesAtendimento", value)} />
-      <SkillField id="habilidade-atendimento" label="Outra habilidade no Balcão de Atendimento" value={item.habilidadeAtendimento} onChange={(habilidadeAtendimento) => update({ habilidadeAtendimento })} />
+      {item.destaquesAtendimento.includes("Outros") ? <OtherField id="outros-atendimento" value={item.outrosAtendimento} onChange={(outrosAtendimento) => update({ outrosAtendimento })} /> : null}
+      <SkillField id="habilidade-atendimento" value={item.habilidadeAtendimento} onChange={(habilidadeAtendimento) => update({ habilidadeAtendimento })} />
       <div className="mt-3"><ChoiceGroup title="Balcão de Autosserviço" values={DESTAQUES_AUTOSSERVICO} selected={item.destaquesAutosservico} onToggle={(value) => toggle("destaquesAutosservico", value)} /></div>
-      <SkillField id="habilidade-autosservico" label="Outra habilidade no Balcão de Autosserviço" value={item.habilidadeAutosservico} onChange={(habilidadeAutosservico) => update({ habilidadeAutosservico })} />
+      {item.destaquesAutosservico.includes("Outros") ? <OtherField id="outros-autosservico" value={item.outrosAutosservico} onChange={(outrosAutosservico) => update({ outrosAutosservico })} /> : null}
+      <SkillField id="habilidade-autosservico" value={item.habilidadeAutosservico} onChange={(habilidadeAutosservico) => update({ habilidadeAutosservico })} />
       <div className="mt-3"><ChoiceGroup title="Câmara fria" values={DESTAQUES_CAMARA_FRIA} selected={item.destaquesCamaraFria} onToggle={(value) => toggle("destaquesCamaraFria", value)} /></div>
-      <SkillField id="habilidade-camara-fria" label="Outra habilidade na Câmara fria" value={item.habilidadeCamaraFria} onChange={(habilidadeCamaraFria) => update({ habilidadeCamaraFria })} />
+      {item.destaquesCamaraFria.includes("Outros") ? <OtherField id="outros-camara-fria" value={item.outrosCamaraFria} onChange={(outrosCamaraFria) => update({ outrosCamaraFria })} /> : null}
+      <SkillField id="habilidade-camara-fria" value={item.habilidadeCamaraFria} onChange={(habilidadeCamaraFria) => update({ habilidadeCamaraFria })} />
 
       <SectionTitle>Comentário de reconhecimento</SectionTitle>
       <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
@@ -139,5 +145,6 @@ function AcougueiroValorForm() {
 function Field({ label, value, onChange, type = "text", maxLength }: { label: string; value: string; onChange: (value: string) => void; type?: string; maxLength?: number }) { const id = `valor-${label.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-")}`; return <div className="grid gap-1.5"><Label htmlFor={id}>{label}</Label><Input id={id} type={type} value={value} maxLength={maxLength} onChange={(event) => onChange(event.target.value)} /></div>; }
 function SectionTitle({ children }: { children: React.ReactNode }) { return <h2 className="mb-3 mt-7 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{children}</h2>; }
 function ChoiceGroup({ title, values, selected, onToggle }: { title: string; values: readonly string[]; selected: string[]; onToggle: (value: string) => void }) { return <section className="rounded-lg border border-border bg-card p-4 shadow-sm"><h3 className="font-semibold text-card-foreground">{title}</h3><div className="mt-3 grid grid-cols-2 gap-2">{values.map((value) => { const active = selected.includes(value); return <Button key={value} type="button" variant={active ? "default" : "outline"} className="h-auto min-h-11 whitespace-normal px-3 py-2" onClick={() => onToggle(value)}>{active ? <Check /> : null}{value}</Button>; })}</div></section>; }
-function SkillField({ id, label, value, onChange }: { id: string; label: string; value: string; onChange: (value: string) => void }) { return <section className="mt-2 rounded-lg border border-border bg-card p-4 shadow-sm"><Label htmlFor={id}>{label}</Label><Textarea id={id} className="mt-2 min-h-20" maxLength={200} value={value} placeholder="Digite uma habilidade…" onChange={(event) => onChange(event.target.value)} /><p className="mt-1 text-right text-xs text-muted-foreground">{value.length}/200</p></section>; }
+function OtherField({ id, value, onChange }: { id: string; value: string; onChange: (value: string) => void }) { return <section className="mt-2 rounded-lg border border-border bg-card p-4 shadow-sm"><Label htmlFor={id}>Outros</Label><Input id={id} className="mt-2" maxLength={80} value={value} placeholder="Informe a habilidade" onChange={(event) => onChange(event.target.value)} /><p className="mt-1 text-right text-xs text-muted-foreground">{value.length}/80</p></section>; }
+function SkillField({ id, value, onChange }: { id: string; value: string; onChange: (value: string) => void }) { return <section className="mt-2 rounded-lg border border-border bg-card p-4 shadow-sm"><Label htmlFor={id}>Destaque</Label><Textarea id={id} className="mt-2 min-h-20" maxLength={200} value={value} placeholder="Descreva o destaque do colaborador…" onChange={(event) => onChange(event.target.value)} /><p className="mt-1 text-right text-xs text-muted-foreground">{value.length}/200</p></section>; }
 const PhotoInput = ({ ref, capture, multiple, onFiles }: { ref: React.RefObject<HTMLInputElement | null>; capture?: boolean; multiple?: boolean; onFiles: (files: FileList | null) => void | Promise<void> }) => <input ref={ref} type="file" accept="image/*" capture={capture ? "environment" : undefined} multiple={multiple} className={cn("hidden")} onChange={(event) => { void onFiles(event.target.files); event.target.value = ""; }} />;
