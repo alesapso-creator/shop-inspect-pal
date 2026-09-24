@@ -8,3 +8,5 @@
 - [x] Gerar e compartilhar PDF de reconhecimento no padrão Friboi+
 - [x] Permitir habilidades manuais nos balcões do Açougueiro de Valor
 - [x] Adicionar Câmara fria com habilidades e texto manual ao formulário e PDF
+- [ ] Reorganizar dados e destaques no PDF do Açougueiro de Valor
+- [ ] Adicionar Outros e renomear a descrição manual para Destaque em cada área
