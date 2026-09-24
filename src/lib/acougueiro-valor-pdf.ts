@@ -8,6 +8,7 @@ const W = 210;
 const H = 297;
 const CONTENT = W - M * 2;
 const AGRADECIMENTO = "Nós, do Friboi+, temos orgulho de reconhecer este momento de profissionalismo e dedicação. Cada conquista reflete o compromisso com o aprendizado, a excelência e a valorização de quem faz a diferença todos os dias.";
+const FRASE_FINAL = "Que este reconhecimento inspire novas conquistas e fortaleça uma cultura que valoriza pessoas, dedicação e excelência.";
 let timbreCache: string | null = null;
 
 async function loadTimbre(): Promise<string | null> {
@@ -78,6 +79,22 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.setTextColor(35, 35, 35);
   doc.text(thankYouLines, M + thankYouInset, y + 14);
   y += thankYouH + 5;
+
+  const sealW = 84;
+  const sealH = 18;
+  const sealX = M + (CONTENT - sealW) / 2;
+  doc.setDrawColor(197, 151, 35);
+  doc.setFillColor(255, 249, 225);
+  doc.setLineWidth(0.7);
+  doc.roundedRect(sealX, y, sealW, sealH, 3, 3, "FD");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+  doc.setTextColor(126, 88, 8);
+  doc.text("PROFISSIONAL DESTAQUE FRIBOI+", W / 2, y + 7, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.text(`${item.nivel ? nivelLabel(item.nivel) : "Nível não informado"}  •  ${formatValorDate(item.data)}`, W / 2, y + 13, { align: "center" });
+  y += sealH + 6;
 
   const infoColumns: [string, string][][] = [
     [["Rede", item.rede], ["Loja", item.loja], ["Técnico", item.tecnico]],
@@ -170,7 +187,7 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   ensure(30);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
-  doc.text("Reconhecimento", M, y);
+  doc.text("Impacto gerado", M, y);
   y += 7;
   doc.setFillColor(243, 246, 248);
   const commentLines = doc.splitTextToSize(item.comentario || "—", CONTENT - 12) as string[];
@@ -207,6 +224,19 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
       y += rowH + 5;
     }
   }
+
+  const finalLines = doc.splitTextToSize(FRASE_FINAL, CONTENT - 28) as string[];
+  const finalH = Math.max(20, finalLines.length * 5 + 10);
+  ensure(finalH + 9);
+  y += 5;
+  doc.setDrawColor(22, 138, 90);
+  doc.setLineWidth(0.8);
+  doc.line(M + 28, y, W - M - 28, y);
+  doc.setFont("helvetica", "oblique");
+  doc.setFontSize(9.5);
+  doc.setTextColor(35, 85, 63);
+  doc.text(finalLines, W / 2, y + 8, { align: "center" });
+  y += finalH;
 
   const pages = doc.getNumberOfPages();
   for (let page = 1; page <= pages; page++) {

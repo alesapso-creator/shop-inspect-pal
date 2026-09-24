@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { compressToDataUrl, filesToDataUrls } from "@/lib/photo";
 import { NIVEIS } from "@/lib/inspection";
-import { acougueiroValorSchema, COMENTARIOS_SUGERIDOS, DESTAQUES_ATENDIMENTO, DESTAQUES_AUTOSSERVICO, DESTAQUES_CAMARA_FRIA, type AcougueiroValor } from "@/lib/acougueiro-valor";
+import { acougueiroValorSchema, IMPACTOS_SUGERIDOS, DESTAQUES_ATENDIMENTO, DESTAQUES_AUTOSSERVICO, DESTAQUES_CAMARA_FRIA, type AcougueiroValor } from "@/lib/acougueiro-valor";
 import { getAcougueiroValor, saveAcougueiroValor } from "@/lib/acougueiro-valor-store";
 import { downloadAcougueiroValorPdf, shareAcougueiroValorPdf } from "@/lib/acougueiro-valor-pdf";
 
@@ -121,12 +121,12 @@ function AcougueiroValorForm() {
       {item.destaquesCamaraFria.includes("Outros") ? <OtherField id="outros-camara-fria" value={item.outrosCamaraFria} onChange={(outrosCamaraFria) => update({ outrosCamaraFria })} /> : null}
       <SkillField id="habilidade-camara-fria" value={item.habilidadeCamaraFria} onChange={(habilidadeCamaraFria) => update({ habilidadeCamaraFria })} />
 
-      <SectionTitle>Comentário de reconhecimento</SectionTitle>
+      <SectionTitle>Impacto gerado</SectionTitle>
       <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
-        <Label htmlFor="comentario">Comentário</Label>
-        <Textarea id="comentario" className="mt-2 min-h-28" maxLength={1200} value={item.comentario} placeholder="Descreva por que este colaborador merece reconhecimento…" onChange={(event) => update({ comentario: event.target.value })} />
+        <Label htmlFor="comentario">Impacto gerado pelo colaborador</Label>
+        <Textarea id="comentario" className="mt-2 min-h-28" maxLength={1200} value={item.comentario} placeholder="Descreva os resultados positivos para a loja, equipe ou clientes…" onChange={(event) => update({ comentario: event.target.value })} />
         <p className="mb-2 mt-4 flex items-center gap-1.5 text-xs font-medium text-muted-foreground"><Sparkles className="size-3.5" /> Sugestões</p>
-        <div className="grid gap-2">{COMENTARIOS_SUGERIDOS.map((suggestion) => <Button key={suggestion} type="button" variant="outline" className="h-auto min-h-11 justify-start whitespace-normal px-3 py-2 text-left" onClick={() => update({ comentario: suggestion })}>{suggestion}</Button>)}</div>
+        <div className="grid gap-2">{IMPACTOS_SUGERIDOS.map((suggestion) => <Button key={suggestion} type="button" variant="outline" className="h-auto min-h-11 justify-start whitespace-normal px-3 py-2 text-left" onClick={() => update({ comentario: suggestion })}>{suggestion}</Button>)}</div>
       </section>
 
       <SectionTitle>Fotos do trabalho</SectionTitle>

@@ -26,10 +26,10 @@ export const DESTAQUES_CAMARA_FRIA = [
   "Outros",
 ] as const;
 
-export const COMENTARIOS_SUGERIDOS = [
-  "Demonstra excelência técnica, cuidado com os produtos e compromisso com o cliente.",
-  "É referência para a equipe pela organização, qualidade do trabalho e atenção aos detalhes.",
-  "Seu trabalho contribui para uma apresentação impecável e para o melhor aproveitamento dos produtos.",
+export const IMPACTOS_SUGERIDOS = [
+  "Seu trabalho elevou a qualidade do atendimento e fortaleceu a confiança dos clientes.",
+  "Sua organização e atenção aos detalhes contribuíram para um ambiente mais eficiente e seguro.",
+  "Sua técnica favoreceu o melhor aproveitamento dos produtos, a padronização e a redução de perdas.",
 ] as const;
 
 export type AcougueiroValor = {
@@ -73,7 +73,7 @@ export const acougueiroValorSchema = z.object({
   outrosAutosservico: z.string().trim().max(80, "O campo Outros do Balcão de Autosserviço deve ter até 80 caracteres."),
   habilidadeCamaraFria: z.string().trim().max(200, "A habilidade da Câmara fria deve ter até 200 caracteres."),
   outrosCamaraFria: z.string().trim().max(80, "O campo Outros da Câmara fria deve ter até 80 caracteres."),
-  comentario: z.string().trim().min(1, "Adicione um comentário de reconhecimento.").max(1200),
+  comentario: z.string().trim().min(1, "Descreva o impacto gerado pelo colaborador.").max(1200),
 });
 
 export function newAcougueiroValor(): AcougueiroValor {

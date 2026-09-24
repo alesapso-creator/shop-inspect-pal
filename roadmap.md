@@ -10,3 +10,4 @@
 - [x] Adicionar Câmara fria com habilidades e texto manual ao formulário e PDF
 - [x] Reorganizar dados e destaques no PDF do Açougueiro de Valor
 - [x] Adicionar Outros e renomear a descrição manual para Destaque em cada área
+- [x] Trocar comentário por Impacto gerado e adicionar selo e frase final ao PDF
