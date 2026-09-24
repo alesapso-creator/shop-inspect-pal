@@ -8,6 +8,7 @@ const W = 210;
 const H = 297;
 const CONTENT = W - M * 2;
 const AGRADECIMENTO = "Nós, do Friboi+, temos orgulho de reconhecer este momento de profissionalismo e dedicação. Cada conquista reflete o compromisso com o aprendizado, a excelência e a valorização de quem faz a diferença todos os dias.";
+const FRASE_FINAL = "Que este reconhecimento inspire novas conquistas e fortaleça uma cultura que valoriza pessoas, dedicação e excelência.";
 let timbreCache: string | null = null;
 
 async function loadTimbre(): Promise<string | null> {
@@ -78,6 +79,22 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.setTextColor(35, 35, 35);
   doc.text(thankYouLines, M + thankYouInset, y + 14);
   y += thankYouH + 5;
+
+  const sealW = 84;
+  const sealH = 18;
+  const sealX = M + (CONTENT - sealW) / 2;
+  doc.setDrawColor(197, 151, 35);
+  doc.setFillColor(255, 249, 225);
+  doc.setLineWidth(0.7);
+  doc.roundedRect(sealX, y, sealW, sealH, 3, 3, "FD");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+  doc.setTextColor(126, 88, 8);
+  doc.text("PROFISSIONAL DESTAQUE FRIBOI+", W / 2, y + 7, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.text(`${item.nivel ? nivelLabel(item.nivel) : "Nível não informado"}  •  ${formatValorDate(item.data)}`, W / 2, y + 13, { align: "center" });
+  y += sealH + 6;
 
   const infoColumns: [string, string][][] = [
     [["Rede", item.rede], ["Loja", item.loja], ["Técnico", item.tecnico]],
@@ -170,7 +187,7 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   ensure(30);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
-  doc.text("Reconhecimento", M, y);
+  doc.text("Impacto gerado", M, y);
   y += 7;
   doc.setFillColor(243, 246, 248);
   const commentLines = doc.splitTextToSize(item.comentario || "—", CONTENT - 12) as string[];
@@ -182,6 +199,21 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.setTextColor(35, 35, 35);
   doc.text(commentLines, M + 6, y + 7);
   y += commentH + 9;
+
+  let finalPhraseRendered = false;
+  const renderFinalPhrase = (x: number, width: number, startY: number) => {
+    const lines = doc.splitTextToSize(FRASE_FINAL, width - 12) as string[];
+    const lineY = startY + 2;
+    doc.setDrawColor(22, 138, 90);
+    doc.setLineWidth(0.8);
+    doc.line(x + 6, lineY, x + width - 6, lineY);
+    doc.setFont("helvetica", "oblique");
+    doc.setFontSize(9);
+    doc.setTextColor(35, 85, 63);
+    doc.text(lines, x + width / 2, lineY + 7, { align: "center" });
+    finalPhraseRendered = true;
+    return lines.length * 4.2 + 12;
+  };
 
   if (item.fotosTrabalho.length) {
     ensure(15);
@@ -204,8 +236,22 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
         const cellX = M + index * (cellW + gap);
         doc.addImage(src, "JPEG", cellX + (cellW - size.width) / 2, y, size.width, size.height);
       });
+      const isLastRow = i + cols >= item.fotosTrabalho.length;
+      if (isLastRow && group.length < cols) {
+        const phraseX = M + group.length * (cellW + gap);
+        const phraseW = CONTENT - group.length * (cellW + gap);
+        renderFinalPhrase(phraseX, phraseW, y);
+      }
       y += rowH + 5;
     }
+  }
+
+  if (!finalPhraseRendered) {
+    const finalLines = doc.splitTextToSize(FRASE_FINAL, CONTENT - 28) as string[];
+    const finalH = Math.max(20, finalLines.length * 5 + 10);
+    ensure(finalH + 9);
+    y += 5;
+    renderFinalPhrase(M + 8, CONTENT - 16, y);
   }
 
   const pages = doc.getNumberOfPages();
