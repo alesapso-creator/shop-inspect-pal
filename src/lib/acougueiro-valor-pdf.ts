@@ -200,6 +200,21 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.text(commentLines, M + 6, y + 7);
   y += commentH + 9;
 
+  let finalPhraseRendered = false;
+  const renderFinalPhrase = (x: number, width: number, startY: number) => {
+    const lines = doc.splitTextToSize(FRASE_FINAL, width - 12) as string[];
+    const lineY = startY + 2;
+    doc.setDrawColor(22, 138, 90);
+    doc.setLineWidth(0.8);
+    doc.line(x + 6, lineY, x + width - 6, lineY);
+    doc.setFont("helvetica", "oblique");
+    doc.setFontSize(9);
+    doc.setTextColor(35, 85, 63);
+    doc.text(lines, x + width / 2, lineY + 7, { align: "center" });
+    finalPhraseRendered = true;
+    return lines.length * 4.2 + 12;
+  };
+
   if (item.fotosTrabalho.length) {
     ensure(15);
     doc.setFont("helvetica", "bold");
@@ -221,22 +236,23 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
         const cellX = M + index * (cellW + gap);
         doc.addImage(src, "JPEG", cellX + (cellW - size.width) / 2, y, size.width, size.height);
       });
+      const isLastRow = i + cols >= item.fotosTrabalho.length;
+      if (isLastRow && group.length < cols) {
+        const phraseX = M + group.length * (cellW + gap);
+        const phraseW = CONTENT - group.length * (cellW + gap);
+        renderFinalPhrase(phraseX, phraseW, y);
+      }
       y += rowH + 5;
     }
   }
 
-  const finalLines = doc.splitTextToSize(FRASE_FINAL, CONTENT - 28) as string[];
-  const finalH = Math.max(20, finalLines.length * 5 + 10);
-  ensure(finalH + 9);
-  y += 5;
-  doc.setDrawColor(22, 138, 90);
-  doc.setLineWidth(0.8);
-  doc.line(M + 28, y, W - M - 28, y);
-  doc.setFont("helvetica", "oblique");
-  doc.setFontSize(9.5);
-  doc.setTextColor(35, 85, 63);
-  doc.text(finalLines, W / 2, y + 8, { align: "center" });
-  y += finalH;
+  if (!finalPhraseRendered) {
+    const finalLines = doc.splitTextToSize(FRASE_FINAL, CONTENT - 28) as string[];
+    const finalH = Math.max(20, finalLines.length * 5 + 10);
+    ensure(finalH + 9);
+    y += 5;
+    renderFinalPhrase(M + 8, CONTENT - 16, y);
+  }
 
   const pages = doc.getNumberOfPages();
   for (let page = 1; page <= pages; page++) {
