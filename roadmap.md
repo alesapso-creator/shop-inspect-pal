@@ -12,3 +12,4 @@
 - [x] Adicionar Outros e renomear a descrição manual para Destaque em cada área
 - [x] Trocar comentário por Impacto gerado e adicionar frase final ao PDF
 - [x] Retirar o selo de destaque do PDF
+- [x] Renomear Açougueiro de Valor para Açougueiro em Destaque nas telas e no PDF

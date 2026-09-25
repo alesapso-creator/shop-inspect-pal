@@ -57,7 +57,7 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
   doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text("Açougueiro de Valor", bg ? 66 : M, bg ? 12 : 17);
+  doc.text("Açougueiro em Destaque", bg ? 66 : M, bg ? 12 : 17);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(105, 105, 105);
@@ -251,7 +251,7 @@ export async function buildAcougueiroValorPdf(item: AcougueiroValor): Promise<js
 }
 
 export function acougueiroValorFileName(item: AcougueiroValor) {
-  return `acougueiro-de-valor-${slug(item.colaborador)}-${item.data}.pdf`;
+  return `acougueiro-em-destaque-${slug(item.colaborador)}-${item.data}.pdf`;
 }
 
 export async function downloadAcougueiroValorPdf(item: AcougueiroValor) {
@@ -264,7 +264,7 @@ export async function shareAcougueiroValorPdf(item: AcougueiroValor) {
   const file = new File([doc.output("blob")], acougueiroValorFileName(item), { type: "application/pdf" });
   const nav = navigator as Navigator & { canShare?: (data: { files: File[] }) => boolean };
   if (nav.share && nav.canShare?.({ files: [file] })) {
-    await nav.share({ files: [file], title: "Açougueiro de Valor" });
+    await nav.share({ files: [file], title: "Açougueiro em Destaque" });
     return true;
   }
   doc.save(acougueiroValorFileName(item));

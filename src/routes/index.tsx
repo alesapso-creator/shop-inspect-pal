@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Acesse inspeções, rendimentos bovinos e reconhecimentos Açougueiro de Valor em um só lugar.",
+          "Acesse inspeções, rendimentos bovinos e reconhecimentos Açougueiro em Destaque em um só lugar.",
       },
       { property: "og:title", content: "Gestão de Loja — Relatórios e Reconhecimentos" },
       {
@@ -76,7 +76,7 @@ function Home() {
           </span>
           <span className="mt-8 flex items-end justify-between gap-3">
             <span>
-              <span className="block text-lg font-bold text-card-foreground">Açougueiro de Valor</span>
+              <span className="block text-lg font-bold text-card-foreground">Açougueiro em Destaque</span>
               <span className="mt-1 block text-sm text-muted-foreground">Reconheça colaboradores e valorize seus destaques</span>
             </span>
             <ArrowRight className="mb-1 size-5 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
