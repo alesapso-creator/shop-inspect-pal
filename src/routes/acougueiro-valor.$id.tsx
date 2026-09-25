@@ -16,9 +16,9 @@ import { downloadAcougueiroValorPdf, shareAcougueiroValorPdf } from "@/lib/acoug
 
 export const Route = createFileRoute("/acougueiro-valor/$id")({
   head: () => ({ meta: [
-    { title: "Novo reconhecimento — Açougueiro de Valor" },
+    { title: "Novo reconhecimento — Açougueiro em Destaque" },
     { name: "description", content: "Registre o colaborador, seus destaques e fotos do trabalho para gerar um reconhecimento em PDF." },
-    { property: "og:title", content: "Novo reconhecimento — Açougueiro de Valor" },
+    { property: "og:title", content: "Novo reconhecimento — Açougueiro em Destaque" },
     { property: "og:description", content: "Valorize colaboradores com destaques profissionais, fotos e relatório em PDF." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary" },
@@ -43,7 +43,7 @@ function AcougueiroValorForm() {
     });
   }, []);
 
-  if (!item) return <AppShell title="Açougueiro de Valor" backTo={{ to: "/acougueiro-valor" }}><p className="py-10 text-center text-sm text-muted-foreground">Carregando…</p></AppShell>;
+  if (!item) return <AppShell title="Açougueiro em Destaque" backTo={{ to: "/acougueiro-valor" }}><p className="py-10 text-center text-sm text-muted-foreground">Carregando…</p></AppShell>;
 
   const toggle = (key: "destaquesAtendimento" | "destaquesAutosservico" | "destaquesCamaraFria", value: string) => {
     const current = item[key];
@@ -82,13 +82,13 @@ function AcougueiroValorForm() {
     if (!validate()) return;
     const shared = await shareAcougueiroValorPdf(item);
     if (shared) { toast.success("Escolha o WhatsApp para enviar o reconhecimento."); return; }
-    const text = `Açougueiro de Valor — reconhecimento de ${item.colaborador.slice(0, 120)}`;
+    const text = `Açougueiro em Destaque — reconhecimento de ${item.colaborador.slice(0, 120)}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
     toast.success("PDF baixado. Anexe o arquivo na conversa do WhatsApp.");
   };
 
   return (
-    <AppShell title={item.colaborador || "Novo reconhecimento"} subtitle="Açougueiro de Valor" backTo={{ to: "/acougueiro-valor" }}>
+    <AppShell title={item.colaborador || "Novo reconhecimento"} subtitle="Açougueiro em Destaque" backTo={{ to: "/acougueiro-valor" }}>
       <section className="rounded-lg border border-border bg-card p-4 shadow-sm">
         <h2 className="font-semibold text-card-foreground">Dados do reconhecimento</h2>
         <div className="mt-4 grid grid-cols-2 gap-3">

@@ -9,9 +9,9 @@ import { nivelLabel } from "@/lib/inspection";
 
 export const Route = createFileRoute("/acougueiro-valor/")({
   head: () => ({ meta: [
-    { title: "Açougueiro de Valor — Reconhecimentos" },
+    { title: "Açougueiro em Destaque — Reconhecimentos" },
     { name: "description", content: "Consulte reconhecimentos salvos ou destaque um novo colaborador." },
-    { property: "og:title", content: "Açougueiro de Valor — Reconhecimentos" },
+    { property: "og:title", content: "Açougueiro em Destaque — Reconhecimentos" },
     { property: "og:description", content: "Histórico de colaboradores reconhecidos pelo trabalho de destaque." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary" },
@@ -32,7 +32,7 @@ function AcougueiroValorHome() {
   const remover = async (id: string) => { await deleteAcougueiroValor(id); void load(); };
 
   return (
-    <AppShell title="Açougueiro de Valor" subtitle="Reconhecimentos salvos" backTo={{ to: "/" }}>
+    <AppShell title="Açougueiro em Destaque" subtitle="Reconhecimentos salvos" backTo={{ to: "/" }}>
       {items === null ? <p className="py-10 text-center text-sm text-muted-foreground">Carregando…</p> : items.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border py-14 text-center">
           <Award className="mx-auto size-10 text-warn" />
